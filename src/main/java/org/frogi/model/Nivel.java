@@ -42,7 +42,6 @@ public class Nivel {
         return nome;
     }
 
-    // Para futuro: verificar se o nível está completo (ex: princesa alcançada)
     public boolean verificarVitoria(Sapo sapo) {
         // Será implementado quando a Princesa estiver bem integrada
         return false;

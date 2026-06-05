@@ -2,7 +2,7 @@ package org.frogi.model.entidades;
 
 public class Grilo extends EntidadeJogo {
 
-    private final int valor; // quantos grilos vale (normalmente 1)
+    private final int valor; // quantos grilos vale 
 
     public Grilo(int posicaoX, int posicaoY) {
         super(posicaoX, posicaoY);

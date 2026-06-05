@@ -10,7 +10,8 @@ public class Salto extends PowerUp {
 
     @Override
     public void interagir(Sapo sapo) {
-        // Avança automaticamente uma secção do nível
-        // Exemplo: mover sapo para frente grande distância
+        // Salto grande para frente (exemplo)
+        sapo.mover(0, -3); // move 3 casas para cima (ajusta conforme tua orientação)
+        System.out.println("Salto ativado!");
     }
 }
