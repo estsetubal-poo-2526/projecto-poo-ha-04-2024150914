@@ -1,4 +1,68 @@
 package org.frogi.model;
 
+import org.frogi.model.entidades.*;
+import org.frogi.model.powerups.PowerUp;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Mapa {
+
+    private final int largura;
+    private final int altura;
+    private final List<EntidadeJogo> entidades;
+
+    public Mapa(int largura, int altura) {
+        this.largura = largura;
+        this.altura = altura;
+        this.entidades = new ArrayList<>();
+    }
+
+    public void adicionarEntidade(EntidadeJogo entidade) {
+        entidades.add(entidade);
+    }
+
+    public void removerEntidade(EntidadeJogo entidade) {
+        entidades.remove(entidade);
+    }
+
+    /**
+     * Processa interações do Sapo com todas as entidades no mapa
+     */
+    public void processarInteracoes(Sapo sapo) {
+        List<EntidadeJogo> paraRemover = new ArrayList<>();
+
+        for (EntidadeJogo entidade : new ArrayList<>(entidades)) {
+            if (entidade.getPosicaoX() == sapo.getPosicaoX() && 
+                entidade.getPosicaoY() == sapo.getPosicaoY()) {
+                
+                entidade.interagir(sapo);
+                
+                // Grilos e PowerUps são consumidos/removidos
+                if (entidade instanceof Grilo || entidade instanceof PowerUp) {
+                    paraRemover.add(entidade);
+                }
+            }
+        }
+
+        for (EntidadeJogo e : paraRemover) {
+            removerEntidade(e);
+        }
+    }
+
+    public boolean isPosicaoValida(int x, int y) {
+        return x >= 0 && x < largura && y >= 0 && y < altura;
+    }
+
+    public List<EntidadeJogo> getEntidades() {
+        return new ArrayList<>(entidades); 
+    }
+
+    public int getLargura() {
+        return largura;
+    }
+
+    public int getAltura() {
+        return altura;
+    }
 }

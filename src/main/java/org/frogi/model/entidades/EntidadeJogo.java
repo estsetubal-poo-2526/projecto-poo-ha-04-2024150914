@@ -22,4 +22,6 @@ public abstract class EntidadeJogo {
         this.posicaoX = x;
         this.posicaoY = y;
     }
+
+    public abstract void interagir(Sapo sapo);
 }

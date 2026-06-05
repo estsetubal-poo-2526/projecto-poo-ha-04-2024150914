@@ -75,16 +75,15 @@ public class Partida {
     }
 
     public ResultadoPartida terminarPartida() {
-
-        terminada = true;
-
-        return new ResultadoPartida(
-                grilosApanhados,
-                tempoDecorrido,
-                venceu,
-                nivelAtual.getNumero()
-        );
-    }
+    terminada = true;
+    return new ResultadoPartida(
+        jogador,
+        grilosApanhados,
+        tempoDecorrido,
+        venceu,
+        nivelAtual.getNumero()   
+    );
+}
 
     // GETTERS
 

@@ -18,38 +18,21 @@ public class ResultadoPartida {
     }
 
     public int calcularPontuacao() {
-
-        int pontuacao = grilosApanhados * 10;
-
-        if (venceu) {
-            pontuacao += 500;
-        }
-
-        pontuacao += nivelAlcancado * 100;
-
+        int pontuacao = grilosApanhados * 10 + nivelAlcancado * 100;
+        if (venceu) pontuacao += 500;
         return pontuacao;
     }
 
-    public int getGrilosApanhados() {
-        return grilosApanhados;
-    }
-
-    public int getTempoDecorrido() {
-        return tempoDecorrido;
-    }
-
-    public boolean isVenceu() {
-        return venceu;
-    }
-
-    public int getNivelAlcancado() {
-        return nivelAlcancado;
-    }
+    // Getters...
+    public Jogador getJogador() { return jogador; }
+    public int getGrilosApanhados() { return grilosApanhados; }
+    public int getTempoDecorrido() { return tempoDecorrido; }
+    public boolean isVenceu() { return venceu; }
+    public int getNivelAlcancado() { return nivelAlcancado; }
 
     @Override
     public String toString() {
-        return jogador.getNome() +
-                " | Pontuação: " + calcularPontuacao() +
-                " | Nível: " + nivelAlcancado;
+        return jogador.getNome() + " | Pontuação: " + calcularPontuacao() +
+               " | Nível: " + nivelAlcancado + " | Grilos: " + grilosApanhados;
     }
 }
