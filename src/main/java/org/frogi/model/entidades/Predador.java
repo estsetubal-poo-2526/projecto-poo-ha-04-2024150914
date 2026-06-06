@@ -17,7 +17,7 @@ public class Predador extends EntidadeJogo {
     }
 
     public void moverAutomatico() {
-        // TODO: lógica de IA simples (ex: mover em direção ao sapo)
+        // lógica de IA simples (ex: mover em direção ao sapo)
     }
 
     public int getVelocidade() {
