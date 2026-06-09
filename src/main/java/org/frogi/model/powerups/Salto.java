@@ -1,5 +1,6 @@
 package org.frogi.model.powerups;
 
+import org.frogi.model.Partida;
 import org.frogi.model.entidades.Sapo;
 
 public class Salto extends PowerUp {
@@ -9,9 +10,10 @@ public class Salto extends PowerUp {
     }
 
     @Override
-    public void interagir(Sapo sapo) {
-        // Salto grande para frente (exemplo)
-        sapo.mover(0, -3); // move 3 casas para cima (ajusta conforme tua orientação)
+    public void interagir(Partida partida) {
+        // Salto grande para frente
+        partida.moverSapo(3, 0); // move 3 casas para cima (ajustar conforme orientação)
         System.out.println("Salto ativado!");
     }
+
 }

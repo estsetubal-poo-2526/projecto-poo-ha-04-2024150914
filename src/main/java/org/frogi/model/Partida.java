@@ -1,16 +1,16 @@
 package org.frogi.model;
 
 import org.frogi.model.entidades.Sapo;
-import org.frogi.model.powerups.PowerUp;
-import org.frogi.model.powerups.VidaExtra;
+
+import java.time.Duration;
+import java.time.Instant;
 
 public class Partida {
 
     private boolean terminada;
     private boolean venceu;
 
-    private int tempoDecorrido;
-    private int grilosApanhados;
+    private Instant instanteInicial;
     private int vidasRestantes;
 
     private Nivel nivelAtual;
@@ -24,23 +24,30 @@ public class Partida {
 
         this.terminada = false;
         this.venceu = false;
-        this.tempoDecorrido = 0;
-        this.grilosApanhados = 0;
+        this.instanteInicial = null;
         this.vidasRestantes = 3;
     }
 
     public void iniciarPartida() {
         terminada = false;
         venceu = false;
+        this.instanteInicial = Instant.now();
         sapo.reviver();
     }
 
-    public void atualizarTempo() {
-        tempoDecorrido++;
+    public long getTempoDecorrido() {
+        if (instanteInicial == null)
+            return 0;
+
+        return Duration.between(instanteInicial, Instant.now())
+                .toSeconds();    }
+
+    public int getGrilosApanhados() {
+        return sapo.getGrilosConsumidos();
     }
 
     public void processarInteracoes() {
-        nivelAtual.processarInteracoes(sapo);
+        nivelAtual.processarInteracoes(this);
     }
 
     public void moverSapo(int deltaX, int deltaY) {
@@ -56,8 +63,10 @@ public class Partida {
     }
 
     public void perderVida() {
+        sapo.morrer();
         vidasRestantes--;
-        grilosApanhados = Math.max(0, grilosApanhados - (grilosApanhados / 3));
+        int perda = sapo.getGrilosConsumidos() / 3;
+        sapo.perderGrilos(perda);
 
         if (vidasRestantes <= 0) {
             reiniciarPartida();
@@ -69,7 +78,11 @@ public class Partida {
     }
 
     public void adicionarGrilo() {
-        grilosApanhados++;
+        sapo.consumirGrilo();
+    }
+
+    public void removerGrilos(int grilos) {
+        sapo.perderGrilos(grilos);
     }
 
     public void adicionarVida() {
@@ -83,23 +96,31 @@ public class Partida {
 
     public void reiniciarPartida() {
         vidasRestantes = 3;
-        grilosApanhados = 0;
-        tempoDecorrido = 0;
+        sapo.perderGrilos(sapo.getGrilosConsumidos());
+        instanteInicial = Instant.now();
+        terminada = false;
+        venceu = false;
+        sapo.reviver();
        /*  nivelAtual = primeiro nível - a definir */
         sapo.setPosicao(1, 1);
     }
 
     public ResultadoPartida terminarPartida() {
         terminada = true;
-        return new ResultadoPartida(jogador, grilosApanhados, tempoDecorrido, venceu, nivelAtual.getNumero());
+        return new ResultadoPartida(
+                jogador,
+                getGrilosApanhados(),
+                (int)getTempoDecorrido(),
+                venceu,
+                nivelAtual.getNumero());
     }
 
     // Getters
     public Sapo getSapo() { return sapo; }
+    public int getXSapo() { return sapo.getPosicaoX(); }
+    public int getYSapo() { return sapo.getPosicaoY(); }
     public Nivel getNivelAtual() { return nivelAtual; }
     public int getVidasRestantes() { return vidasRestantes; }
-    public int getGrilosApanhados() { return grilosApanhados; }
-    public int getTempoDecorrido() { return tempoDecorrido; }
     public boolean isTerminada() { return terminada; }
     public boolean isVenceu() { return venceu; }
 

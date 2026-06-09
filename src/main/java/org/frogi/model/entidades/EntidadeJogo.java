@@ -1,9 +1,11 @@
 package org.frogi.model.entidades;
 
+import org.frogi.model.Partida;
+
 public abstract class EntidadeJogo {
 
-    protected int posicaoX;
-    protected int posicaoY;
+    private int posicaoX;
+    private int posicaoY;
 
     public EntidadeJogo(int posicaoX, int posicaoY) {
         this.posicaoX = posicaoX;
@@ -23,5 +25,10 @@ public abstract class EntidadeJogo {
         this.posicaoY = y;
     }
 
-    public abstract void interagir(Sapo sapo);
+    public abstract void interagir(Partida partida);
+
+    @Override
+    public String toString() {
+        return "(" + posicaoX + ", " + posicaoY + ")";
+    }
 }

@@ -1,26 +1,16 @@
 package org.frogi.model.entidades;
 
-public class Grilo extends EntidadeJogo {
+import org.frogi.model.Partida;
 
-    private final int valor; // quantos grilos vale 
+public class Grilo extends EntidadeJogo {
 
     public Grilo(int posicaoX, int posicaoY) {
         super(posicaoX, posicaoY);
-        this.valor = 1;
-    }
-
-    public Grilo(int posicaoX, int posicaoY, int valor) {
-        super(posicaoX, posicaoY);
-        this.valor = valor;
     }
 
     @Override
-    public void interagir(Sapo sapo) {
-        sapo.consumirGrilo(this.valor);
+    public void interagir(Partida partida) {
+        partida.adicionarGrilo();
         // O grilo será removido do mapa depois da interação
-    }
-
-    public int getValor() {
-        return valor;
     }
 }

@@ -1,5 +1,6 @@
 package org.frogi.model.powerups;
 
+import org.frogi.model.Partida;
 import org.frogi.model.entidades.EntidadeJogo;
 import org.frogi.model.entidades.Sapo;
 
@@ -10,5 +11,6 @@ public abstract class PowerUp extends EntidadeJogo {
     }
 
     @Override
-    public abstract void interagir(Sapo sapo);
+    public abstract void interagir(Partida partida);
+
 }

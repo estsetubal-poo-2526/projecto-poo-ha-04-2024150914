@@ -1,8 +1,10 @@
 package org.frogi.model.entidades;
 
+import org.frogi.model.Partida;
+
 public class Predador extends EntidadeJogo {
 
-    private final int velocidade; // para futuro movimento automático
+    private final int velocidade; // para movimento automático
 
     public Predador(int posicaoX, int posicaoY) {
         super(posicaoX, posicaoY);
@@ -10,10 +12,8 @@ public class Predador extends EntidadeJogo {
     }
 
     @Override
-    public void interagir(Sapo sapo) {
-        if (sapo.isVivo()) {
-            sapo.morrer();
-        }
+    public void interagir(Partida partida) {
+        partida.perderVida();
     }
 
     public void moverAutomatico() {

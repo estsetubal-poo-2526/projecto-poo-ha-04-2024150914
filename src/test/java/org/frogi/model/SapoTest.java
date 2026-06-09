@@ -19,10 +19,12 @@ class SapoTest {
     void testEvolucaoFases() {
         assertEquals(FaseSapo.PEQUENO, sapo.getFaseAtual());
 
-        sapo.consumirGrilo(8);
+        for(int i = 0; i < 8; i++)
+            sapo.consumirGrilo();
         assertEquals(FaseSapo.MEDIO, sapo.getFaseAtual());
 
-        sapo.consumirGrilo(10);
+        for(int i = 0; i < 10; i++)
+            sapo.consumirGrilo();
         assertEquals(FaseSapo.GRANDE, sapo.getFaseAtual());
     }
 

@@ -29,14 +29,14 @@ public class Mapa {
     /**
      * Processa interações do Sapo com todas as entidades no mapa
      */
-    public void processarInteracoes(Sapo sapo) {
+    public void processarInteracoes(Partida partida) {
         List<EntidadeJogo> paraRemover = new ArrayList<>();
 
         for (EntidadeJogo entidade : new ArrayList<>(entidades)) {
-            if (entidade.getPosicaoX() == sapo.getPosicaoX() && 
-                entidade.getPosicaoY() == sapo.getPosicaoY()) {
+            if (entidade.getPosicaoX() == partida.getXSapo() &&
+                entidade.getPosicaoY() == partida.getYSapo()) {
                 
-                entidade.interagir(sapo);
+                entidade.interagir(partida);
                 
                 // Grilos e PowerUps são consumidos/removidos
                 if (entidade instanceof Grilo || entidade instanceof PowerUp) {
@@ -55,7 +55,7 @@ public class Mapa {
     }
 
     public List<EntidadeJogo> getEntidades() {
-        return new ArrayList<>(entidades); 
+        return List.copyOf(entidades);
     }
 
     public int getLargura() {

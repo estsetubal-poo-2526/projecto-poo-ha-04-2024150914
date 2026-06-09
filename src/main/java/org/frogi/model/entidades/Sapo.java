@@ -1,6 +1,9 @@
 package org.frogi.model.entidades;
 
 import org.frogi.model.FaseSapo;
+import org.frogi.model.Partida;
+
+
 
 public class Sapo extends EntidadeJogo {
 
@@ -16,12 +19,21 @@ public class Sapo extends EntidadeJogo {
     }
 
     public void mover(int deltaX, int deltaY) {
-        this.posicaoX += deltaX;
-        this.posicaoY += deltaY;
+        setPosicao(
+                getPosicaoX() + deltaX,
+                getPosicaoY() + deltaY
+        );
     }
 
-    public void consumirGrilo(int quantidade) {
-        this.grilosConsumidos += quantidade;
+    public void consumirGrilo() {
+        this.grilosConsumidos++;
+        evoluir();
+    }
+
+    public void perderGrilos(int quantidade){
+        if(quantidade < 0)
+            throw new IllegalArgumentException("A quantidade é inválida!");
+        grilosConsumidos = Math.max(0, grilosConsumidos - quantidade);
         evoluir();
     }
 
@@ -30,6 +42,8 @@ public class Sapo extends EntidadeJogo {
             faseAtual = FaseSapo.GRANDE;
         } else if (grilosConsumidos >= 7) {
             faseAtual = FaseSapo.MEDIO;
+        } else {
+            faseAtual = FaseSapo.PEQUENO;
         }
     }
 
@@ -41,16 +55,11 @@ public class Sapo extends EntidadeJogo {
         this.vivo = true;
     }
 
-    public void setPosicao(int x, int y) {
-        this.posicaoX = x;
-        this.posicaoY = y;
-    }
-
     /**
      * Implementação obrigatória do método abstrato
      */
     @Override
-    public void interagir(Sapo sapo) {
+    public void interagir(Partida partida) {
         // O sapo não interage consigo mesmo
     }
 

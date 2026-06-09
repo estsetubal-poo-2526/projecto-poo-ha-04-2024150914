@@ -1,5 +1,7 @@
 package org.frogi.model.entidades;
 
+import org.frogi.model.Partida;
+
 public class Princesa extends EntidadeJogo {
 
     public Princesa(int posicaoX, int posicaoY) {
@@ -7,8 +9,8 @@ public class Princesa extends EntidadeJogo {
     }
 
     @Override
-    public void interagir(Sapo sapo) {
+    public void interagir(Partida partida) {
         // Vitória!
-        // A Partida deve ser notificada disto
+        partida.terminarPartida();
     }
 }

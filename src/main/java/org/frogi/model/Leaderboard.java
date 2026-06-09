@@ -9,7 +9,7 @@ public class Leaderboard {
     private List<ResultadoPartida> resultados;
 
     public Leaderboard() {
-        resultados = new ArrayList<>();
+        this.resultados = new ArrayList<>();
     }
 
     public void adicionarResultado(ResultadoPartida resultado) {
@@ -18,7 +18,6 @@ public class Leaderboard {
     }
 
     public void ordenarResultados() {
-
         resultados.sort(
                 Comparator.comparingInt(
                         ResultadoPartida::calcularPontuacao
@@ -34,6 +33,6 @@ public class Leaderboard {
     }
 
     public List<ResultadoPartida> getResultados() {
-        return resultados;
+        return List.copyOf(resultados);
     }
 }

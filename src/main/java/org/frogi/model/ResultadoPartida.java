@@ -7,6 +7,7 @@ public class ResultadoPartida {
     private boolean venceu;
     private int nivelAlcancado;
     private Jogador jogador;
+    private int pontosTotais;
 
     public ResultadoPartida(Jogador jogador, int grilosApanhados, int tempoDecorrido,
                             boolean venceu, int nivelAlcancado) {
@@ -15,6 +16,7 @@ public class ResultadoPartida {
         this.tempoDecorrido = tempoDecorrido;
         this.venceu = venceu;
         this.nivelAlcancado = nivelAlcancado;
+        this.pontosTotais = calcularPontuacao();
     }
 
     public int calcularPontuacao() {
@@ -23,7 +25,7 @@ public class ResultadoPartida {
         return pontuacao;
     }
 
-    // Getters...
+    // Getters
     public Jogador getJogador() { return jogador; }
     public int getGrilosApanhados() { return grilosApanhados; }
     public int getTempoDecorrido() { return tempoDecorrido; }

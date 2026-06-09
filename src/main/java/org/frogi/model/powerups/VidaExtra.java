@@ -10,13 +10,7 @@ public class VidaExtra extends PowerUp {
     }
 
     @Override
-    public void interagir(Sapo sapo) {
-        // Partida é que deve gerir vidas
-        System.out.println("Vida Extra coletada!");
-    }
-
-    // Método para ser chamado pela Partida
-    public void aplicarEfeito(Partida partida) {
+    public void interagir(Partida partida) {
         partida.adicionarVida();
     }
 }

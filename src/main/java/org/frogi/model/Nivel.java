@@ -21,8 +21,8 @@ public class Nivel {
         this.nome = nome;
     }
 
-    public void processarInteracoes(Sapo sapo) {
-        mapa.processarInteracoes(sapo);
+    public void processarInteracoes(Partida partida) {
+        mapa.processarInteracoes(partida);
     }
 
     public boolean isPosicaoValida(int x, int y) {
