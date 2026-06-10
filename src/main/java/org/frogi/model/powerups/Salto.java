@@ -12,7 +12,7 @@ public class Salto extends PowerUp {
     @Override
     public void interagir(Partida partida) {
         // Salto grande para frente
-        partida.moverSapo(3, 0); // move 3 casas para cima (ajustar conforme orientação)
+        partida.moverSapo(3, 0); // move 3 casas para a direita
         System.out.println("Salto ativado!");
     }
 

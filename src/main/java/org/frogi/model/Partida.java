@@ -115,6 +115,10 @@ public class Partida {
                 nivelAtual.getNumero());
     }
 
+    public void setNivel(Nivel novoNivel){
+        this.nivelAtual = novoNivel;
+    }
+
     // Getters
     public Sapo getSapo() { return sapo; }
     public int getXSapo() { return sapo.getPosicaoX(); }

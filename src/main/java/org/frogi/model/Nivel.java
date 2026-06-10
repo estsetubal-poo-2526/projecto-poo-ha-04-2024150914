@@ -7,7 +7,7 @@ public class Nivel {
 
     private final int numero;
     private final Mapa mapa;
-    private final String nome; // opcional: "Nível 1 - Pântano Inicial"
+    private final String nome;
 
     public Nivel(int numero, Mapa mapa) {
         this.numero = numero;
