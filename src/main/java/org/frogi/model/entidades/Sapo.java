@@ -53,11 +53,10 @@ public class Sapo extends EntidadeJogo {
 
     public void reviver() {
         this.vivo = true;
+        setPosicao(0,1);
     }
 
-    /**
-     * Implementação obrigatória do método abstrato
-     */
+
     @Override
     public void interagir(Partida partida) {
         // O sapo não interage consigo mesmo

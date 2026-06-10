@@ -20,7 +20,7 @@ public class Partida {
     public Partida(Jogador jogador, Nivel nivelInicial) {
         this.jogador = jogador;
         this.nivelAtual = nivelInicial;
-        this.sapo = new Sapo(1, 1); // posição inicial
+        this.sapo = new Sapo(0, 1);
 
         this.terminada = false;
         this.venceu = false;
@@ -60,6 +60,25 @@ public class Partida {
             sapo.mover(deltaX, deltaY);
             processarInteracoes();
         }
+
+        Mapa mapa = nivelAtual.getMapa();
+
+        // Verificar se o sapo caiu no rio
+        if (mapa.getColunasRio().contains(novoX)) {
+
+            boolean estaEmCimaDeNenufar = false;
+
+            for (int[] par : mapa.getCoordenadasNenufares()) {
+                if (par[0] == novoX && par[1] == novoY) {
+                    estaEmCimaDeNenufar = true;
+                    break;
+                }
+            }
+
+            if (!estaEmCimaDeNenufar) {
+                perderVida();
+            }
+        }
     }
 
     public void perderVida() {
@@ -68,11 +87,7 @@ public class Partida {
         int perda = sapo.getGrilosConsumidos() / 3;
         sapo.perderGrilos(perda);
 
-        if (vidasRestantes <= 0) {
-            reiniciarPartida();
-        } else {
-            // Respawn no início do nível
-            sapo.setPosicao(1, 1);
+        if (vidasRestantes > 0) {
             sapo.reviver();
         }
     }
@@ -89,9 +104,13 @@ public class Partida {
         vidasRestantes++;
     }
 
-    public void reiniciarNivel() {
-        sapo.setPosicao(1, 1);
-        sapo.reviver();
+    public void avancarParaProximoNivel(Nivel novoNivel) {
+        this.nivelAtual = novoNivel;
+        sapo.setPosicao(0, 1);
+    }
+
+    public boolean isNivelCompleto(){
+        return sapo.getPosicaoX() == 14 && sapo.getPosicaoY() == 0;
     }
 
     public void reiniciarPartida() {
@@ -101,8 +120,6 @@ public class Partida {
         terminada = false;
         venceu = false;
         sapo.reviver();
-       /*  nivelAtual = primeiro nível - a definir */
-        sapo.setPosicao(1, 1);
     }
 
     public ResultadoPartida terminarPartida() {

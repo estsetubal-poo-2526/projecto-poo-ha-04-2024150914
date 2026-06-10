@@ -8,14 +8,16 @@ import java.util.List;
 
 public class Mapa {
 
-    private final int largura;
-    private final int altura;
+    private final int largura = 15;
+    private final int altura = 10;
     private final List<EntidadeJogo> entidades;
+    private final List<Integer> colunasRio;
+    private final int[][] coordenadasNenufares;
 
-    public Mapa(int largura, int altura) {
-        this.largura = largura;
-        this.altura = altura;
+    public Mapa(List<Integer> colunasRio, int[][] coordenadasNenufares) {
         this.entidades = new ArrayList<>();
+        this.colunasRio = colunasRio;
+        this.coordenadasNenufares = coordenadasNenufares;
     }
 
     public void adicionarEntidade(EntidadeJogo entidade) {
@@ -65,4 +67,6 @@ public class Mapa {
     public int getAltura() {
         return altura;
     }
+    public List<Integer> getColunasRio() { return colunasRio; }
+    public int[][] getCoordenadasNenufares() { return coordenadasNenufares; }
 }

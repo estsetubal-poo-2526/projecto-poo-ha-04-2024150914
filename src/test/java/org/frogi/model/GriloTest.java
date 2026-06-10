@@ -4,6 +4,9 @@ import org.frogi.model.entidades.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class GriloTest {
@@ -14,7 +17,12 @@ class GriloTest {
     @BeforeEach
     void setUp() {
         Jogador jogador = new Jogador("Pedro");
-        Nivel nivel = new Nivel(1, new Mapa(15, 15));
+        List<Integer> rios = List.of(2, 4, 6, 8, 10, 12);
+        int[][] nenufares = {
+                {2, 2}, {2, 6}, {4, 3}, {4, 9}, {6, 0}, {6, 2},
+                {8, 5}, {8, 9}, {10, 0}, {10, 2}, {10, 7}, {12, 1}, {12, 3}
+        };
+        Nivel nivel = new Nivel(1, new Mapa(rios, nenufares));
 
         partida = new Partida(jogador, nivel);
         grilo = new Grilo(5, 5);
