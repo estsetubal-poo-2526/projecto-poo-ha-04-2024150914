@@ -16,12 +16,14 @@ public class MenuScreen {
     private final Runnable onNewGame;
     private final Runnable onHowToPlay;
     private final Runnable onLeaderboard;
+    private final Runnable onLoadGame;
 
-    public MenuScreen(Runnable onNewGame, Runnable onHowToPlay, Runnable onLeaderboard) {
+    public MenuScreen(Runnable onNewGame, Runnable onHowToPlay, Runnable onLeaderboard, Runnable onLoadGame) {
         this.root = new StackPane();
         this.onNewGame = onNewGame;
         this.onHowToPlay = onHowToPlay;
         this.onLeaderboard = onLeaderboard;
+        this.onLoadGame = onLoadGame;
 
         configurarLayout();
     }
@@ -69,6 +71,8 @@ public class MenuScreen {
         btnNewGame.setOnAction(e -> onNewGame.run());
 
         Button btnLoadGame = criarBotaoMenu("Load Game");
+        btnLoadGame.setOnAction(e -> onLoadGame.run()); 
+
         Button btnOptions = criarBotaoMenu("Options");
 
         menuCentral.getChildren().addAll(titulo, btnNewGame, btnLoadGame, btnOptions);

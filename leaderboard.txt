@@ -1,2 +1,4 @@
 Bruna;3;16;true;2
 Diogo;3;41;true;2
+Jogador 1;6;17;true;2
+Jogador 1;6;23;true;2

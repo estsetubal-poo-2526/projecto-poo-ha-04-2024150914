@@ -40,7 +40,8 @@ public class Partida {
             return 0;
 
         return Duration.between(instanteInicial, Instant.now())
-                .toSeconds();    }
+                .toSeconds();
+    }
 
     public int getGrilosApanhados() {
         return sapo.getGrilosConsumidos();
@@ -51,7 +52,8 @@ public class Partida {
     }
 
     public void moverSapo(int deltaX, int deltaY) {
-        if (!sapo.isVivo()) return;
+        if (!sapo.isVivo())
+            return;
 
         int novoX = sapo.getPosicaoX() + deltaX;
         int novoY = sapo.getPosicaoY() + deltaY;
@@ -109,7 +111,7 @@ public class Partida {
         sapo.setPosicao(0, 1);
     }
 
-    public boolean isNivelCompleto(){
+    public boolean isNivelCompleto() {
         return sapo.getPosicaoX() == 14 && sapo.getPosicaoY() == 0;
     }
 
@@ -127,23 +129,53 @@ public class Partida {
         return new ResultadoPartida(
                 jogador,
                 getGrilosApanhados(),
-                (int)getTempoDecorrido(),
+                (int) getTempoDecorrido(),
                 venceu,
                 nivelAtual.getNumero());
     }
 
-    public void setNivel(Nivel novoNivel){
+    public void setNivel(Nivel novoNivel) {
         this.nivelAtual = novoNivel;
     }
 
+    // Adiciona na classe Partida.java
+    public void setTempoDecorrido(long segundos) {
+        // Reinicia o instante para que o tempo continue a contar corretamente
+        this.instanteInicial = Instant.now().minusSeconds(segundos);
+    }
+
     // Getters
-    public Sapo getSapo() { return sapo; }
-    public int getXSapo() { return sapo.getPosicaoX(); }
-    public int getYSapo() { return sapo.getPosicaoY(); }
-    public Nivel getNivelAtual() { return nivelAtual; }
-    public int getVidasRestantes() { return vidasRestantes; }
-    public boolean isTerminada() { return terminada; }
-    public boolean isVenceu() { return venceu; }
+    public Sapo getSapo() {
+        return sapo;
+    }
+
+    public int getXSapo() {
+        return sapo.getPosicaoX();
+    }
+
+    public int getYSapo() {
+        return sapo.getPosicaoY();
+    }
+
+    public Nivel getNivelAtual() {
+        return nivelAtual;
+    }
+
+    public int getVidasRestantes() {
+        return vidasRestantes;
+    }
+
+    public boolean isTerminada() {
+        return terminada;
+    }
+
+    public boolean isVenceu() {
+        return venceu;
+    }
+
+    public Jogador getJogador() {
+        return jogador;
+    }
 
     public void setVenceu(boolean venceu) {
         this.venceu = venceu;

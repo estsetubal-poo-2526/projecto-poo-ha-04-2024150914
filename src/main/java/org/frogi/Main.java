@@ -5,6 +5,9 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.frogi.model.*;
@@ -16,13 +19,16 @@ import org.frogi.view.JogoScreen;
 import org.frogi.view.LeaderboardScreen;
 import org.frogi.view.MenuScreen;
 
+import java.io.*;
 import java.util.List;
+import java.util.Optional;
 
 public class Main extends Application {
 
     private Stage primaryStage;
     private Jogador jogador;
     private Leaderboard leaderboard;
+    private Timeline gameLoopAtual;
 
     @Override
     public void start(Stage primaryStage) {
@@ -30,19 +36,16 @@ public class Main extends Application {
         primaryStage.setResizable(false);
         this.leaderboard = new Leaderboard();
 
-        // Arranca mostrando o Menu Principal
         mostrarMenu();
     }
 
     private void mostrarMenu() {
-        // Criamos o menu passando o que cada botão deve fazer quando for clicado
         MenuScreen menu = new MenuScreen(
-                this::iniciarJogo,      // Ao carregar New Game
-                this::mostrarHowToPlay, // Ao carregar no "?"
-                this::mostrarLeaderboard // Ao carregar no "LD"
-        );
+                this::iniciarJogo,
+                this::mostrarHowToPlay,
+                this::mostrarLeaderboard,
+                this::carregarJogo);
 
-        // Usa o tamanho padrão do tabuleiro (15 colunas * 70px = 1050 largura por ~ 750 altura com o topo)
         Scene cenaMenu = new Scene(menu.getRoot(), 1050, 750);
         primaryStage.setTitle("Frogi - Menu Principal");
         primaryStage.setScene(cenaMenu);
@@ -64,137 +67,95 @@ public class Main extends Application {
     }
 
     private void iniciarJogo() {
-        // 1. Criar a caixa de diálogo para pedir o nome
         javafx.scene.control.TextInputDialog dialog = new javafx.scene.control.TextInputDialog("Jogador 1");
         dialog.setTitle("Novo Jogo - Frogi");
         dialog.setHeaderText("Prepara-te para entrar no pântano!");
         dialog.setContentText("Por favor, introduz o teu nome:");
 
-        // Customização visual básica para combinar com o teu estilo escuro/madeira (opcional)
-        dialog.getDialogPane().setStyle("-fx-background-color: #2c3e50; -fx-text-fill: white;");
-        dialog.getDialogPane().lookup(".content.label").setStyle("-fx-text-fill: white;");
+        Optional<String> resultado = dialog.showAndWait();
 
-        // 2. Mostrar a janela e esperar que o utilizador responda
-        java.util.Optional<String> resultado = dialog.showAndWait();
-
-        // 3. Verificar se o jogador escreveu o nome e clicou em "OK"
         if (resultado.isPresent() && !resultado.get().trim().isEmpty()) {
-            String nomeIntroduzido = resultado.get().trim();
-
-            // Instanciamos o jogador com o nome real introduzido!
-            this.jogador = new Jogador(nomeIntroduzido);
-
-            System.out.println("O jogador " + nomeIntroduzido + " iniciou a partida.");
-
-            // Arranca os níveis com o jogador atualizado
+            this.jogador = new Jogador(resultado.get().trim());
             Niveis(primaryStage, this.jogador);
-        } else {
-            // Se fechou ou clicou em cancelar, não fazemos nada (ele continua no menu)
-            System.out.println("Criação de jogo cancelada.");
         }
     }
 
-    public void Niveis(Stage primaryStage, Jogador jogador){
+    public void Niveis(Stage primaryStage, Jogador jogador) {
         Nivel nivel1 = nivel1();
         Nivel nivel2 = nivel2();
-        //Nivel nivel3 = nivel3();
 
         Partida partida = new Partida(jogador, nivel1);
         partida.iniciarPartida();
 
-        // 2. Criar a View
         JogoScreen janelaJogo = new JogoScreen(partida, nivel1.getNumero());
 
-        // 3. Criar a Scene
         Scene scene = new Scene(janelaJogo.getContentorPrincipal());
 
-        // Capturar as teclas do teclado
+        // Controlo de teclas
         scene.setOnKeyPressed(event -> {
-            // Se o sapo estiver morto, não faz nada
-            if (!partida.getSapo().isVivo()) return;
+            if (!partida.getSapo().isVivo())
+                return;
 
-            switch (event.getCode()) {
-                case W, UP ->    partida.moverSapo(0, -1); // Cima (Y diminui)
-                case S, DOWN ->  partida.moverSapo(0, 1);  // Baixo (Y aumenta)
-                case A, LEFT ->  partida.moverSapo(-1, 0); // Esquerda (X diminui)
-                case D, RIGHT -> partida.moverSapo(1, 0);  // Direita (X aumenta)
-                default -> { return; } // Ignora outras teclas
+            if (event.getCode() == javafx.scene.input.KeyCode.ESCAPE) {
+                pausarJogo(partida, primaryStage, janelaJogo);
+                return;
             }
 
-            // Depois de mover o modelo, redesenha o mapa na interface gráfica
+            switch (event.getCode()) {
+                case W, UP -> partida.moverSapo(0, -1);
+                case S, DOWN -> partida.moverSapo(0, 1);
+                case A, LEFT -> partida.moverSapo(-1, 0);
+                case D, RIGHT -> partida.moverSapo(1, 0);
+            }
             janelaJogo.atualizarMapa();
         });
 
-        final Timeline[] gameLoopHolder = new Timeline[1];
-
-        Timeline gameLoop = new Timeline(new KeyFrame(Duration.millis(1000), event -> {
+        // Game Loop
+        Timeline gameLoop = new Timeline(new KeyFrame(Duration.millis(300), e -> {
             if (partida.getVidasRestantes() <= 0) {
-                partida.setNivel(nivel1()); // Recria o nível 1 limpo
+                partida.setNivel(nivel1());
                 partida.reiniciarPartida();
-                primaryStage.setTitle("Frogi "+ partida.getNivelAtual().getNome());
                 janelaJogo.atualizarMapa();
                 return;
             }
 
             if (partida.isNivelCompleto()) {
                 if (partida.getNivelAtual().getNumero() == 1) {
-
-                    // Altera o modelo para o nível 2
                     partida.avancarParaProximoNivel(nivel2());
-                    primaryStage.setTitle("Frogi "+ partida.getNivelAtual().getNome());
-
-                    // Redesenha a janela (o mapa novo vai aparecer sozinho)
                     janelaJogo.atualizarMapa();
-                } else if (partida.getNivelAtual().getNumero() == 3) {
-                    // Carregar o nivel3()
-                } else if(partida.getNivelAtual().getNumero() == 2){
-                    // Mostrar ecrã de vitoria
+                } else if (partida.getNivelAtual().getNumero() == 2) {
                     partida.setVenceu(true);
                     ResultadoPartida resultadoFinal = partida.terminarPartida();
                     leaderboard.adicionarResultado(resultadoFinal);
-
-                    if (gameLoopHolder[0] != null) {
-                        gameLoopHolder[0].stop();
-                    }
-
+                    if (gameLoopAtual != null)
+                        gameLoopAtual.stop();
                     mostrarMenu();
                 }
-                return; // Interrompe para não mover monstros no frame de transição
+                return;
             }
 
             if (!partida.isTerminada()) {
-
-                // Atualiza o relógio do topo mesmo que o jogador esteja parado
                 janelaJogo.atualizarMapa();
-
-                // Mover os predadores e grilos aleatoriamente
                 moverEntidadesDoMapa(partida.getNivelAtual(), partida);
-
-                // Após mover os inimigos, processa interações (ver se algum predador pisou o sapo)
                 partida.processarInteracoes();
-
-                // Redesenha tudo com as novas posições
                 janelaJogo.atualizarMapa();
             }
         }));
 
-        // Define que a Timeline corre para sempre até fechar o jogo
-        gameLoopHolder[0] = gameLoop;
         gameLoop.setCycleCount(Animation.INDEFINITE);
-        gameLoop.play(); // Arranca o temporizador!
+        this.gameLoopAtual = gameLoop;
+        gameLoop.play();
 
-        primaryStage.setTitle("Frogi "+ partida.getNivelAtual().getNome());
+        primaryStage.setTitle("Frogi - " + partida.getNivelAtual().getNome());
         primaryStage.setScene(scene);
-        primaryStage.setResizable(false);
         primaryStage.show();
     }
 
-    private Nivel nivel1(){
+    private Nivel nivel1() {
         List<Integer> riosNivel = List.of(2, 4, 6, 8, 10, 12);
-        int[][] nenufaresNivel = {
-                {2, 2}, {2, 6}, {2,9}, {4, 3}, {4, 9}, {4,6}, {6, 0}, {6, 2}, {6,7},
-                {8, 5}, {8, 9}, {10, 0}, {10, 2}, {10, 7}, {12, 1}, {12, 3}
-        };
+        int[][] nenufaresNivel = { { 2, 2 }, { 2, 6 }, { 2, 9 }, { 4, 3 }, { 4, 9 }, { 4, 6 }, { 6, 0 }, { 6, 2 },
+                { 6, 7 },
+                { 8, 5 }, { 8, 9 }, { 10, 0 }, { 10, 2 }, { 10, 7 }, { 12, 1 }, { 12, 3 } };
         Mapa mapaNivel = new Mapa(riosNivel, nenufaresNivel);
 
         mapaNivel.adicionarEntidade(new Grilo(3, 2));
@@ -203,17 +164,14 @@ public class Main extends Application {
         mapaNivel.adicionarEntidade(new Salto(2, 6));
         mapaNivel.adicionarEntidade(new Predador(9, 9));
 
-        Nivel nivel = new Nivel(1, mapaNivel, "Nível 1 - Fase Inicial");
-
-        return nivel;
+        return new Nivel(1, mapaNivel, "Nível 1 - Fase Inicial");
     }
 
-    private Nivel nivel2(){
+    private Nivel nivel2() {
         List<Integer> riosNivel = List.of(2, 4, 6, 8, 10, 12);
-        int[][] nenufaresNivel = {
-                {2, 3}, {2, 5}, {2,7}, {4, 1}, {4, 2}, {6, 0}, {6,7},
-                {8, 5}, {8, 9}, {10, 2}, {10, 7}, {12, 3}
-        };
+        int[][] nenufaresNivel = { { 2, 3 }, { 2, 5 }, { 2, 7 }, { 4, 1 }, { 4, 2 }, { 6, 0 }, { 6, 7 }, { 8, 5 },
+                { 8, 9 },
+                { 10, 2 }, { 10, 7 }, { 12, 3 } };
         Mapa mapaNivel = new Mapa(riosNivel, nenufaresNivel);
 
         mapaNivel.adicionarEntidade(new Grilo(3, 2));
@@ -227,20 +185,167 @@ public class Main extends Application {
         mapaNivel.adicionarEntidade(new Salto(2, 6));
         mapaNivel.adicionarEntidade(new VidaExtra(8, 9));
 
-        Nivel nivel = new Nivel(2, mapaNivel, "Nível 2 - Mais Dificil");
-
-        return nivel;
+        return new Nivel(2, mapaNivel, "Nível 2 - Mais Difícil");
     }
-
-
 
     private void moverEntidadesDoMapa(Nivel nivel, Partida partida) {
         for (EntidadeJogo entidade : nivel.getMapa().getEntidades()) {
-            // Se for um predador, passa-lhe o nível atual e ele resolve o movimento sozinho
-            if (entidade instanceof Predador) {
-                ((Predador) entidade).moverAutomatico(nivel, partida);
+            if (entidade instanceof Predador predador) {
+                predador.moverAutomatico(nivel, partida);
             }
         }
+    }
+
+    private void pausarJogo(Partida partida, Stage stage, JogoScreen jogoScreen) {
+        if (gameLoopAtual != null)
+            gameLoopAtual.pause();
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Jogo Pausado");
+        alert.setHeaderText("Frogi Pausado");
+        alert.setContentText("O que queres fazer?");
+
+        ButtonType continuar = new ButtonType("Continuar");
+        ButtonType guardarSair = new ButtonType("Guardar e Sair");
+        ButtonType sairSemGuardar = new ButtonType("Sair sem guardar", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(continuar, guardarSair, sairSemGuardar);
+
+        Optional<ButtonType> resultado = alert.showAndWait();
+
+        if (resultado.isPresent()) {
+            if (resultado.get() == guardarSair) {
+                guardarProgresso(partida);
+                mostrarMenu();
+            } else if (resultado.get() == sairSemGuardar) {
+                mostrarMenu();
+            } else {
+                if (gameLoopAtual != null)
+                    gameLoopAtual.play();
+            }
+        }
+    }
+
+    private void guardarProgresso(Partida partida) {
+        try (PrintWriter pw = new PrintWriter(new FileWriter("save_frogi.txt"))) {
+            pw.println(partida.getJogador().getNome());
+            pw.println(partida.getNivelAtual().getNumero());
+            pw.println(partida.getGrilosApanhados());
+            pw.println(partida.getVidasRestantes());
+            pw.println(partida.getTempoDecorrido());
+            pw.println(partida.getXSapo());
+            pw.println(partida.getYSapo());
+
+            System.out.println("✅ Guardado com sucesso!"); // ← vê se aparece no console
+
+            Alert sucesso = new Alert(Alert.AlertType.INFORMATION);
+            sucesso.setTitle("Sucesso");
+            sucesso.setContentText("Jogo guardado!");
+            sucesso.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void carregarJogo() {
+        File saveFile = new File("save_frogi.txt");
+        if (!saveFile.exists()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Sem Save");
+            alert.setContentText("Não existe jogo guardado.");
+            alert.showAndWait();
+            return;
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(saveFile))) {
+            String nomeJogador = br.readLine().trim();
+            int nivelNumero = Integer.parseInt(br.readLine().trim());
+            int grilosSalvos = Integer.parseInt(br.readLine().trim());
+            int vidasSalvas = Integer.parseInt(br.readLine().trim());
+            long tempoSalvo = Long.parseLong(br.readLine().trim());
+            int xSapo = Integer.parseInt(br.readLine().trim());
+            int ySapo = Integer.parseInt(br.readLine().trim());
+
+            this.jogador = new Jogador(nomeJogador);
+            Nivel nivelCarregado = (nivelNumero == 1) ? nivel1() : nivel2();
+
+            Partida partida = new Partida(this.jogador, nivelCarregado);
+            partida.iniciarPartida();
+
+            // Restaurar estado
+            for (int i = 0; i < grilosSalvos; i++) {
+                partida.adicionarGrilo();
+            }
+
+            while (partida.getVidasRestantes() < vidasSalvas) {
+                partida.adicionarVida();
+            }
+
+            partida.getSapo().setPosicao(xSapo, ySapo);
+
+            // === RESTAURAR TEMPO ===
+            partida.setTempoDecorrido(tempoSalvo);
+
+            System.out.println("✅ Jogo carregado com sucesso! Tempo restaurado: " + tempoSalvo + "s");
+
+            // Inicia o jogo
+            Niveis(primaryStage, this.jogador);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro");
+            alert.setContentText("Erro ao carregar o save.");
+            alert.showAndWait();
+        }
+    }
+
+    private void iniciarJogoComPartida(Partida partida, int nivelNumero) {
+        JogoScreen janelaJogo = new JogoScreen(partida, nivelNumero);
+
+        Scene scene = new Scene(janelaJogo.getContentorPrincipal());
+
+        scene.setOnKeyPressed(event -> {
+            if (!partida.getSapo().isVivo())
+                return;
+
+            if (event.getCode() == javafx.scene.input.KeyCode.ESCAPE) {
+                pausarJogo(partida, primaryStage, janelaJogo);
+                return;
+            }
+
+            switch (event.getCode()) {
+                case W, UP -> partida.moverSapo(0, -1);
+                case S, DOWN -> partida.moverSapo(0, 1);
+                case A, LEFT -> partida.moverSapo(-1, 0);
+                case D, RIGHT -> partida.moverSapo(1, 0);
+            }
+            janelaJogo.atualizarMapa();
+        });
+
+        Timeline gameLoop = new Timeline(new KeyFrame(Duration.millis(300), e -> {
+            if (partida.getVidasRestantes() <= 0 || partida.isTerminada())
+                return;
+
+            if (partida.isNivelCompleto()) {
+                // tua lógica de vitória...
+                return;
+            }
+
+            janelaJogo.atualizarMapa();
+            moverEntidadesDoMapa(partida.getNivelAtual(), partida);
+            partida.processarInteracoes();
+            janelaJogo.atualizarMapa();
+        }));
+
+        gameLoop.setCycleCount(Animation.INDEFINITE);
+        this.gameLoopAtual = gameLoop;
+        gameLoop.play();
+
+        primaryStage.setTitle("Frogi - " + partida.getNivelAtual().getNome());
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     public static void main(String[] args) {
