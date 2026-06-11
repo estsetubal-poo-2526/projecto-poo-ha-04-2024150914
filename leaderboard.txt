@@ -1,4 +1,3 @@
-Jogador 1;4;23;2
-Jogador 1;5;54;3
-Bruna;5;39;3
-Diogo;7;78;3
+Bruna;5;39
+Diogo;7;78
+Brina;8;76

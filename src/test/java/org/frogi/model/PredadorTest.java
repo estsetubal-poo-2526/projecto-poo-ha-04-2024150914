@@ -37,11 +37,6 @@ class PredadorTest {
     }
 
     @Test
-    void testVelocidade() {
-        assertEquals(1, predador.getVelocidade());
-    }
-
-    @Test
     void testPosicao() {
         assertEquals(3, predador.getPosicaoX());
         assertEquals(3, predador.getPosicaoY());

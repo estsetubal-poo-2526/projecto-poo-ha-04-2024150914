@@ -132,8 +132,7 @@ public class Partida {
         return new ResultadoPartida(
                 jogador,
                 getGrilosApanhados(),
-                (int)getTempoDecorrido(),
-                nivelAtual.getNumero());
+                (int)getTempoDecorrido());
     }
 
     public void registarInicioPausa() {

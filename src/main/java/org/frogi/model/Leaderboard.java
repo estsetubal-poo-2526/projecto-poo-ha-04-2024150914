@@ -12,13 +12,24 @@ public class Leaderboard {
 
     public Leaderboard() {
         this.resultados = new ArrayList<>();
-        carregarDoFicheiro();
+        carregarDoFicheiro(FICHEIRO_LEADERBOARD);
+    }
+
+    public Leaderboard(String caminhoFicheiro) {
+        this.resultados = new ArrayList<>();
+        carregarDoFicheiro(caminhoFicheiro);
+    }
+
+    public void adicionarResultado(ResultadoPartida resultado, String ficheiro) {
+        resultados.add(resultado);
+        ordenarResultados();
+        guardarNoFicheiro(resultado, ficheiro);
     }
 
     public void adicionarResultado(ResultadoPartida resultado) {
         resultados.add(resultado);
         ordenarResultados();
-        guardarNoFicheiro(resultado);
+        guardarNoFicheiro(resultado, FICHEIRO_LEADERBOARD);
     }
 
     public void ordenarResultados() {
@@ -41,16 +52,15 @@ public class Leaderboard {
     }
 
     //Grava apenas o novo resultado no fim do ficheiro
-    private void guardarNoFicheiro(ResultadoPartida r) {
-        try (FileWriter fw = new FileWriter(FICHEIRO_LEADERBOARD, true);
+    private void guardarNoFicheiro(ResultadoPartida r, String ficheiro) {
+        try (FileWriter fw = new FileWriter(ficheiro, true);
              BufferedWriter bw = new BufferedWriter(fw);
              PrintWriter out = new PrintWriter(bw)) {
 
-            // Guardar: Nome;GrilosComidos;TempoEmSegundos;Nivel
+            // Guardar: Nome;GrilosComidos;TempoEmSegundos;
             out.println(r.getJogador().getNome() + ";" +
                     r.getGrilosApanhados() + ";" +
-                    r.getTempoDecorrido() + ";" +
-                    r.getNivelAlcancado());
+                    r.getTempoDecorrido() + ";");
 
         } catch (IOException e) {
             System.out.println("Erro ao gravar recorde: " + e.getMessage());
@@ -58,22 +68,21 @@ public class Leaderboard {
     }
 
     //Lê o ficheiro linha a linha e reconstrói os objetos ResultadoPartida
-    private void carregarDoFicheiro() {
-        File f = new File(FICHEIRO_LEADERBOARD);
+    private void carregarDoFicheiro(String ficheiro) {
+        File f = new File(ficheiro);
         if (!f.exists()) return;
 
         try (BufferedReader br = new BufferedReader(new FileReader(f))) {
             String linha;
             while ((linha = br.readLine()) != null) {
                 String[] dados = linha.split(";");
-                if (dados.length == 4) {
+                if (dados.length == 3) {
                     Jogador jog = new Jogador(dados[0]);
                     int grilos = Integer.parseInt(dados[1]);
                     int tempo = Integer.parseInt(dados[2]);
-                    int nivel = Integer.parseInt(dados[3]);
 
                     // Cria o objeto ResultadoPartida correspondente a essa linha
-                    ResultadoPartida res = new ResultadoPartida(jog, grilos, tempo, nivel);
+                    ResultadoPartida res = new ResultadoPartida(jog, grilos, tempo);
 
                     // Adiciona diretamente à lista interna sem gravar de novo
                     resultados.add(res);

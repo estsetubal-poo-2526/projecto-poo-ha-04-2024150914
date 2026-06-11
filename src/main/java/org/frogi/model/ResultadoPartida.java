@@ -4,16 +4,12 @@ public class ResultadoPartida {
 
     private int grilosApanhados;
     private int tempoDecorrido;
-    private int nivelAlcancado;
     private Jogador jogador;
-    private int pontosTotais;
 
-    public ResultadoPartida(Jogador jogador, int grilosApanhados, int tempoDecorrido, int nivelAlcancado) {
+    public ResultadoPartida(Jogador jogador, int grilosApanhados, int tempoDecorrido) {
         this.jogador = jogador;
         this.grilosApanhados = grilosApanhados;
         this.tempoDecorrido = tempoDecorrido;
-        this.nivelAlcancado = nivelAlcancado;
-        this.pontosTotais = calcularPontuacao();
     }
 
     public int calcularPontuacao() {
@@ -25,11 +21,9 @@ public class ResultadoPartida {
     public Jogador getJogador() { return jogador; }
     public int getGrilosApanhados() { return grilosApanhados; }
     public int getTempoDecorrido() { return tempoDecorrido; }
-    public int getNivelAlcancado() { return nivelAlcancado; }
 
     @Override
     public String toString() {
-        return jogador.getNome() + " | Pontuação: " + calcularPontuacao() +
-               " | Nível: " + nivelAlcancado + " | Grilos: " + grilosApanhados;
+        return jogador.getNome() + " | Pontuação: " + calcularPontuacao() + " | Grilos: " + grilosApanhados;
     }
 }

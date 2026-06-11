@@ -16,8 +16,7 @@ class ResultadoPartidaTest {
         resultado = new ResultadoPartida(
                 jogador,
                 10,
-                120,
-                3
+                120
         );
     }
 
@@ -42,11 +41,6 @@ class ResultadoPartidaTest {
     @Test
     void testGetTempoDecorrido() {
         assertEquals(120, resultado.getTempoDecorrido());
-    }
-
-    @Test
-    void testGetNivelAlcancado() {
-        assertEquals(3, resultado.getNivelAlcancado());
     }
 
     @Test
