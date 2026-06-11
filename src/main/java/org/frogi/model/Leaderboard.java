@@ -46,11 +46,10 @@ public class Leaderboard {
              BufferedWriter bw = new BufferedWriter(fw);
              PrintWriter out = new PrintWriter(bw)) {
 
-            // Guardar: Nome;GrilosComidos;TempoEmSegundos;Venceu;Nivel
+            // Guardar: Nome;GrilosComidos;TempoEmSegundos;Nivel
             out.println(r.getJogador().getNome() + ";" +
                     r.getGrilosApanhados() + ";" +
                     r.getTempoDecorrido() + ";" +
-                    r.isVenceu() + ";" +
                     r.getNivelAlcancado());
 
         } catch (IOException e) {
@@ -67,17 +66,16 @@ public class Leaderboard {
             String linha;
             while ((linha = br.readLine()) != null) {
                 String[] dados = linha.split(";");
-                if (dados.length == 5) {
+                if (dados.length == 4) {
                     Jogador jog = new Jogador(dados[0]);
                     int grilos = Integer.parseInt(dados[1]);
                     int tempo = Integer.parseInt(dados[2]);
-                    boolean venceu = Boolean.parseBoolean(dados[3]);
-                    int nivel = Integer.parseInt(dados[4]);
+                    int nivel = Integer.parseInt(dados[3]);
 
-                    // Criar o objeto ResultadoPartida correspondente a essa linha
-                    ResultadoPartida res = new ResultadoPartida(jog, grilos, tempo, venceu, nivel);
+                    // Cria o objeto ResultadoPartida correspondente a essa linha
+                    ResultadoPartida res = new ResultadoPartida(jog, grilos, tempo, nivel);
 
-                    // Adicionar diretamente à lista interna sem gravar de novo
+                    // Adiciona diretamente à lista interna sem gravar de novo
                     resultados.add(res);
                 }
             }

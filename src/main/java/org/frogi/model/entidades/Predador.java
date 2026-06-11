@@ -43,7 +43,7 @@ public class Predador extends EntidadeJogo {
             calcularDirecaoPerseguicao(partida, nivelAtual);
 
         } else if (nivelAtual.getNumero() >= 3) {
-            // NÍVEL 3: Dois passos em diraçao ao sapo com verificação imediata entre eles
+            // NÍVEL 3: Dois passos em direçao ao sapo com verificação imediata entre eles
 
             // Dá o primeiro passo
             calcularDirecaoPerseguicao(partida, nivelAtual);

@@ -1,5 +1,6 @@
 package org.frogi.model.powerups;
 
+import org.frogi.controller.GestorSom;
 import org.frogi.model.Partida;
 import org.frogi.model.entidades.Sapo;
 
@@ -13,7 +14,7 @@ public class Salto extends PowerUp {
     public void interagir(Partida partida) {
         // Salto grande para frente
         partida.moverSapo(3, 0); // move 3 casas para a direita
-        System.out.println("Salto ativado!");
+        GestorSom.getInstance().tocarPowerUp();
     }
 
 }

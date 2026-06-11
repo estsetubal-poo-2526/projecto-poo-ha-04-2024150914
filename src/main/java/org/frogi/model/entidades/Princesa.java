@@ -10,8 +10,7 @@ public class Princesa extends EntidadeJogo {
 
     @Override
     public void interagir(Partida partida) {
-        // Vitória!
+        // Vitória
         partida.setVenceu(true);
-        partida.terminarPartida();
     }
 }

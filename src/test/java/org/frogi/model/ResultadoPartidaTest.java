@@ -17,7 +17,6 @@ class ResultadoPartidaTest {
                 jogador,
                 10,
                 120,
-                true,
                 3
         );
     }
@@ -43,11 +42,6 @@ class ResultadoPartidaTest {
     @Test
     void testGetTempoDecorrido() {
         assertEquals(120, resultado.getTempoDecorrido());
-    }
-
-    @Test
-    void testIsVenceu() {
-        assertTrue(resultado.isVenceu());
     }
 
     @Test

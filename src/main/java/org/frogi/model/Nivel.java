@@ -41,9 +41,4 @@ public class Nivel {
     public String getNome() {
         return nome;
     }
-
-    public boolean verificarVitoria(Sapo sapo) {
-        // Será implementado quando a Princesa estiver bem integrada
-        return false;
-    }
 }

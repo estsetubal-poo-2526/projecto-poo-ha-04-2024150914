@@ -1,5 +1,6 @@
 package org.frogi.model;
 
+import org.frogi.controller.GestorSom;
 import org.frogi.model.entidades.Sapo;
 
 import java.time.Duration;
@@ -11,6 +12,7 @@ public class Partida {
     private boolean venceu;
 
     private Instant instanteInicial;
+    private Instant instantePausa;
     private int vidasRestantes;
 
     private Nivel nivelAtual;
@@ -90,10 +92,12 @@ public class Partida {
         if (vidasRestantes > 0) {
             sapo.reviver();
         }
+        GestorSom.getInstance().tocarMorte();
     }
 
     public void adicionarGrilo() {
         sapo.consumirGrilo();
+        GestorSom.getInstance().tocarComerGrilo();
     }
 
     public void removerGrilos(int grilos) {
@@ -102,6 +106,7 @@ public class Partida {
 
     public void adicionarVida() {
         vidasRestantes++;
+        GestorSom.getInstance().tocarPowerUp();
     }
 
     public void avancarParaProximoNivel(Nivel novoNivel) {
@@ -110,7 +115,7 @@ public class Partida {
     }
 
     public boolean isNivelCompleto(){
-        return sapo.getPosicaoX() == 14 && sapo.getPosicaoY() == 0;
+        return sapo.getPosicaoX() == 14 && sapo.getPosicaoY() == 9;
     }
 
     public void reiniciarPartida() {
@@ -128,8 +133,23 @@ public class Partida {
                 jogador,
                 getGrilosApanhados(),
                 (int)getTempoDecorrido(),
-                venceu,
                 nivelAtual.getNumero());
+    }
+
+    public void registarInicioPausa() {
+        this.instantePausa = Instant.now();
+    }
+
+    public void ajustarTempoPosPausa() {
+        if (this.instantePausa != null && this.instanteInicial != null) {
+            // Calcula quantos segundos o jogo esteve em pausa
+            long segundosEmPausa = Duration.between(this.instantePausa, Instant.now()).toSeconds();
+
+            // Empurra o instante inicial para a frente para "ignorar" o tempo de pausa
+            this.instanteInicial = this.instanteInicial.plusSeconds(segundosEmPausa);
+
+            this.instantePausa = null; // Reseta para a próxima pausa
+        }
     }
 
     public void setNivel(Nivel novoNivel){

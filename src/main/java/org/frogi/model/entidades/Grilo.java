@@ -11,6 +11,5 @@ public class Grilo extends EntidadeJogo {
     @Override
     public void interagir(Partida partida) {
         partida.adicionarGrilo();
-        // O grilo será removido do mapa depois da interação
     }
 }

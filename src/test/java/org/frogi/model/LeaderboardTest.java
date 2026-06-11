@@ -19,7 +19,7 @@ class LeaderboardTest {
         Jogador jogador = new Jogador("Pedro");
 
         ResultadoPartida resultado =
-                new ResultadoPartida(jogador, 10, 100, true, 3);
+                new ResultadoPartida(jogador, 10, 100, 3);
 
         leaderboard.adicionarResultado(resultado);
 
@@ -34,10 +34,10 @@ class LeaderboardTest {
         Jogador jogador2 = new Jogador("Ana");
 
         ResultadoPartida resultado1 =
-                new ResultadoPartida(jogador1, 5, 100, false, 1);
+                new ResultadoPartida(jogador1, 5, 100, 1);
 
         ResultadoPartida resultado2 =
-                new ResultadoPartida(jogador2, 20, 50, true, 3);
+                new ResultadoPartida(jogador2, 20, 50, 3);
 
         leaderboard.adicionarResultado(resultado1);
         leaderboard.adicionarResultado(resultado2);
@@ -54,7 +54,7 @@ class LeaderboardTest {
             Jogador jogador = new Jogador("Jogador" + i);
 
             ResultadoPartida resultado =
-                    new ResultadoPartida(jogador, i, 100, false, 1);
+                    new ResultadoPartida(jogador, i, 100, 1);
 
             leaderboard.adicionarResultado(resultado);
         }
@@ -68,7 +68,7 @@ class LeaderboardTest {
         Jogador jogador = new Jogador("Pedro");
 
         ResultadoPartida resultado =
-                new ResultadoPartida(jogador, 10, 100, true, 2);
+                new ResultadoPartida(jogador, 10, 100, 2);
 
         leaderboard.adicionarResultado(resultado);
 
