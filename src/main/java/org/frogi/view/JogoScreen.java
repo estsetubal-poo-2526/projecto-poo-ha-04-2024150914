@@ -11,11 +11,12 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import org.frogi.model.FaseSapo;
 import org.frogi.model.Mapa;
 import org.frogi.model.Partida;
 import org.frogi.model.entidades.*;
-import org.frogi.model.powerups.Salto;
-import org.frogi.model.powerups.VidaExtra;
+import org.frogi.model.entidades.powerups.Salto;
+import org.frogi.model.entidades.powerups.VidaExtra;
 
 import java.util.List;
 import java.util.Objects;
@@ -205,11 +206,29 @@ public class JogoScreen {
             gridPane.add(sinalProxNivel, 14, 9);
         }
 
-        // Sapo
+        // Sapo (com base na fase)
         if (partida.getSapo().isVivo()) {
             ImageView visualSapo = new ImageView(imgSapo);
-            visualSapo.setFitWidth(TAMANHO_CELULA);
-            visualSapo.setFitHeight(TAMANHO_CELULA);
+            // Fase de evolução atual do Sapo
+            FaseSapo fase = partida.getSapo().getFaseAtual();
+
+            // Calcula o tamanho do sapo
+            int tamanhoSapo = 0;
+            switch (fase) {
+                case PEQUENO -> tamanhoSapo = 40;
+                case MEDIO   -> tamanhoSapo = 56;
+                case GRANDE  -> tamanhoSapo = 72;
+            }
+
+            // Aplica o tamanho calculado
+            visualSapo.setFitWidth(tamanhoSapo);
+            visualSapo.setFitHeight(tamanhoSapo);
+
+            // Centra o sapo na célula
+            GridPane.setHalignment(visualSapo, javafx.geometry.HPos.CENTER);
+            GridPane.setValignment(visualSapo, javafx.geometry.VPos.CENTER);
+
+            // Adiciona-o à grelha na posição correta
             gridPane.add(visualSapo, partida.getXSapo(), partida.getYSapo());
         }
     }

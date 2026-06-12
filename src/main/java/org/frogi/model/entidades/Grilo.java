@@ -10,6 +10,9 @@ public class Grilo extends EntidadeJogo {
 
     @Override
     public void interagir(Partida partida) {
+        if (partida == null) {
+            throw new IllegalArgumentException("A partida não pode ser nula.");
+        }
         partida.adicionarGrilo();
     }
 }

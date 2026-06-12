@@ -1,7 +1,6 @@
-package org.frogi.model.powerups;
+package org.frogi.model.entidades.powerups;
 
-import org.frogi.controller.GestorSom;
-import org.frogi.model.entidades.Sapo;
+import org.frogi.controller.SomController;
 import org.frogi.model.Partida;
 
 public class VidaExtra extends PowerUp {
@@ -13,6 +12,6 @@ public class VidaExtra extends PowerUp {
     @Override
     public void interagir(Partida partida) {
         partida.adicionarVida();
-        GestorSom.getInstance().tocarPowerUp();
+        SomController.getInstance().tocarPowerUp();
     }
 }

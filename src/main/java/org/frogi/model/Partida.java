@@ -1,12 +1,16 @@
 package org.frogi.model;
 
-import org.frogi.controller.GestorSom;
+import org.frogi.controller.SomController;
 import org.frogi.model.entidades.Sapo;
+import org.frogi.model.exceptions.PosicaoInvalidaException;
 
 import java.time.Duration;
 import java.time.Instant;
 
 public class Partida {
+
+    private static final int SPAWN_X = 0;
+    private static final int SPAWN_Y = 1;
 
     private boolean terminada;
     private boolean venceu;
@@ -20,9 +24,16 @@ public class Partida {
     private final Sapo sapo;
 
     public Partida(Jogador jogador, Nivel nivelInicial) {
+        if (jogador == null) {
+            throw new IllegalArgumentException("O jogador não pode ser nulo.");
+        }
+        if (nivelInicial == null) {
+            throw new IllegalArgumentException("O nível inicial não pode ser nulo.");
+        }
+
         this.jogador = jogador;
         this.nivelAtual = nivelInicial;
-        this.sapo = new Sapo(0, 1);
+        this.sapo = new Sapo(SPAWN_X, SPAWN_Y);
 
         this.terminada = false;
         this.venceu = false;
@@ -34,15 +45,20 @@ public class Partida {
         terminada = false;
         venceu = false;
         this.instanteInicial = Instant.now();
-        sapo.reviver();
+
+        if (!sapo.isVivo()) {
+            sapo.reviver(SPAWN_X, SPAWN_Y);
+        } else {
+            sapo.setPosicao(SPAWN_X, SPAWN_Y);
+        }
     }
 
     public long getTempoDecorrido() {
         if (instanteInicial == null)
             return 0;
 
-        return Duration.between(instanteInicial, Instant.now())
-                .toSeconds();    }
+        return Duration.between(instanteInicial, Instant.now()).toSeconds();
+    }
 
     public int getGrilosApanhados() {
         return sapo.getGrilosConsumidos();
@@ -58,10 +74,14 @@ public class Partida {
         int novoX = sapo.getPosicaoX() + deltaX;
         int novoY = sapo.getPosicaoY() + deltaY;
 
-        if (nivelAtual.isPosicaoValida(novoX, novoY)) {
-            sapo.mover(deltaX, deltaY);
-            processarInteracoes();
+        if (!nivelAtual.isPosicaoValida(novoX, novoY)) {
+            throw new PosicaoInvalidaException(novoX, novoY);
         }
+        sapo.mover(deltaX, deltaY);
+        processarInteracoes();
+
+        // Se o sapo morreu ou venceu na colisão de interações, não é preciso de validar o rio
+        if (!sapo.isVivo() || venceu) return;
 
         Mapa mapa = nivelAtual.getMapa();
 
@@ -90,14 +110,14 @@ public class Partida {
         sapo.perderGrilos(perda);
 
         if (vidasRestantes > 0) {
-            sapo.reviver();
+            sapo.reviver(SPAWN_X, SPAWN_Y);
         }
-        GestorSom.getInstance().tocarMorte();
+        SomController.getInstance().tocarMorte();
     }
 
     public void adicionarGrilo() {
         sapo.consumirGrilo();
-        GestorSom.getInstance().tocarComerGrilo();
+        SomController.getInstance().tocarComerGrilo();
     }
 
     public void removerGrilos(int grilos) {
@@ -106,12 +126,15 @@ public class Partida {
 
     public void adicionarVida() {
         vidasRestantes++;
-        GestorSom.getInstance().tocarPowerUp();
+        SomController.getInstance().tocarPowerUp();
     }
 
     public void avancarParaProximoNivel(Nivel novoNivel) {
+        if (novoNivel == null) {
+            throw new IllegalArgumentException("O próximo nível não pode ser nulo.");
+        }
         this.nivelAtual = novoNivel;
-        sapo.setPosicao(0, 1);
+        sapo.setPosicao(SPAWN_X, SPAWN_Y);
     }
 
     public boolean isNivelCompleto(){
@@ -124,7 +147,11 @@ public class Partida {
         instanteInicial = Instant.now();
         terminada = false;
         venceu = false;
-        sapo.reviver();
+        if (!sapo.isVivo()) {
+            sapo.reviver(SPAWN_X, SPAWN_Y);
+        } else {
+            sapo.setPosicao(SPAWN_X, SPAWN_Y);
+        }
     }
 
     public ResultadoPartida terminarPartida() {
@@ -143,15 +170,16 @@ public class Partida {
         if (this.instantePausa != null && this.instanteInicial != null) {
             // Calcula quantos segundos o jogo esteve em pausa
             long segundosEmPausa = Duration.between(this.instantePausa, Instant.now()).toSeconds();
-
-            // Empurra o instante inicial para a frente para "ignorar" o tempo de pausa
+            // Empurra o instante inicial para a frente para ignorar o tempo de pausa
             this.instanteInicial = this.instanteInicial.plusSeconds(segundosEmPausa);
-
             this.instantePausa = null; // Reseta para a próxima pausa
         }
     }
 
     public void setNivel(Nivel novoNivel){
+        if (novoNivel == null) {
+            throw new IllegalArgumentException("O nível não pode ser nulo.");
+        }
         this.nivelAtual = novoNivel;
     }
 

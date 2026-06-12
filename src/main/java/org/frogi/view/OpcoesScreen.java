@@ -8,7 +8,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import org.frogi.controller.GestorSom;
+import org.frogi.controller.SomController;
 
 import java.util.Objects;
 
@@ -84,9 +84,9 @@ public class OpcoesScreen {
         );
 
         // Listener que deteta quando o jogador mexe no Slider
-        sliderMusica.setValue(GestorSom.getInstance().getVolumeMusica() * 100); // Define a posição inicial com base no volume atual
+        sliderMusica.setValue(SomController.getInstance().getVolumeMusica() * 100); // Define a posição inicial com base no volume atual
         sliderMusica.valueProperty().addListener((observable, oldValue, newValue) -> {
-            GestorSom.getInstance().setVolumeMusica(newValue.doubleValue() / 100.0);
+            SomController.getInstance().setVolumeMusica(newValue.doubleValue() / 100.0);
         });
 
         linhaVolume.getChildren().addAll(musica, sliderMusica);

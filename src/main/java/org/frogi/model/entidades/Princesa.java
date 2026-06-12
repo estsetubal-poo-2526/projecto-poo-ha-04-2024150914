@@ -11,6 +11,9 @@ public class Princesa extends EntidadeJogo {
     @Override
     public void interagir(Partida partida) {
         // Vitória
+        if (partida == null) {
+            throw new IllegalArgumentException("A partida não pode ser nula.");
+        }
         partida.setVenceu(true);
     }
 }

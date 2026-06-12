@@ -5,8 +5,8 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import java.util.Objects;
 
-public class GestorSom {
-    private static GestorSom instance;
+public class SomController {
+    private static SomController instance;
 
     private MediaPlayer musicaFundo;
     private AudioClip somComerGrilo;
@@ -15,16 +15,16 @@ public class GestorSom {
 
     private double volumeMusica = 0.5; // Começa a 50%
 
-    private GestorSom() {
+    private SomController() {
         try {
-            // 1. Carregar Música de Fundo (Loop infinito)
+            // Carrega Música de Fundo
             String musicaPath = Objects.requireNonNull(getClass().getResource("/audio/musica_fundo.mp3")).toExternalForm();
             Media media = new Media(musicaPath);
             musicaFundo = new MediaPlayer(media);
             musicaFundo.setCycleCount(MediaPlayer.INDEFINITE); // Loop eterno
             musicaFundo.setVolume(volumeMusica);
 
-            // 2. Carregar Efeitos Sonoros (AudioClip é ideal para sons curtos e rápidos sem lag)
+            // Carrega Efeitos Sonoros
             somComerGrilo = new AudioClip(Objects.requireNonNull(getClass().getResource("/audio/comer_grilo.wav")).toExternalForm());
             somPowerUp    = new AudioClip(Objects.requireNonNull(getClass().getResource("/audio/powerup.wav")).toExternalForm());
             somMorte      = new AudioClip(Objects.requireNonNull(getClass().getResource("/audio/morte.wav")).toExternalForm());
@@ -34,19 +34,15 @@ public class GestorSom {
         }
     }
 
-    public static GestorSom getInstance() {
+    public static SomController getInstance() {
         if (instance == null) {
-            instance = new GestorSom();
+            instance = new SomController();
         }
         return instance;
     }
 
     public void tocarMusicaFundo() {
         if (musicaFundo != null) musicaFundo.play();
-    }
-
-    public void pararMusicaFundo() {
-        if (musicaFundo != null) musicaFundo.stop();
     }
 
     public void tocarComerGrilo() {

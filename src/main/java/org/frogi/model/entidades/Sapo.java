@@ -2,7 +2,7 @@ package org.frogi.model.entidades;
 
 import org.frogi.model.FaseSapo;
 import org.frogi.model.Partida;
-
+import org.frogi.model.exceptions.EstadoSapoInvalidoException;
 
 
 public class Sapo extends EntidadeJogo {
@@ -19,6 +19,9 @@ public class Sapo extends EntidadeJogo {
     }
 
     public void mover(int deltaX, int deltaY) {
+        if (!this.vivo) {
+            throw new EstadoSapoInvalidoException("Não é possível mover um sapo que está morto.");
+        }
         setPosicao(
                 getPosicaoX() + deltaX,
                 getPosicaoY() + deltaY
@@ -26,13 +29,16 @@ public class Sapo extends EntidadeJogo {
     }
 
     public void consumirGrilo() {
+        if (!this.vivo) {
+            throw new EstadoSapoInvalidoException("Um sapo morto não pode consumir grilos!");
+        }
         this.grilosConsumidos++;
         evoluir();
     }
 
     public void perderGrilos(int quantidade){
         if(quantidade < 0)
-            throw new IllegalArgumentException("A quantidade é inválida!");
+            throw new IllegalArgumentException("A quantidade de grilos a perder não pode ser negativa!");
         grilosConsumidos = Math.max(0, grilosConsumidos - quantidade);
         evoluir();
     }
@@ -48,12 +54,19 @@ public class Sapo extends EntidadeJogo {
     }
 
     public void morrer() {
-        this.vivo = false;
+        if(this.vivo) {
+            this.vivo = false;
+        }else{
+            throw new EstadoSapoInvalidoException("O sapo já está morto!");
+        }
     }
 
-    public void reviver() {
+    public void reviver(int x, int y) {
+        if (this.vivo) {
+            throw new EstadoSapoInvalidoException("O sapo já se encontra vivo.");
+        }
         this.vivo = true;
-        setPosicao(0,1);
+        setPosicao(x,y);
     }
 
 

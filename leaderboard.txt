@@ -1,3 +1,1 @@
-Bruna;5;39
-Diogo;7;78
-Brina;8;76
+Bruna;12;67;

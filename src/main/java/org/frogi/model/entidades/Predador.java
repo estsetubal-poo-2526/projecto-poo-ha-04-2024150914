@@ -3,6 +3,7 @@ package org.frogi.model.entidades;
 import org.frogi.model.Partida;
 import org.frogi.model.Nivel;
 import org.frogi.model.Mapa;
+import org.frogi.model.exceptions.PosicaoInvalidaException;
 
 import java.util.Random;
 
@@ -19,6 +20,13 @@ public class Predador extends EntidadeJogo {
 
 
     public void moverAutomatico(Nivel nivelAtual, Partida partida) {
+        if (nivelAtual == null) {
+            throw new IllegalArgumentException("O nível atual não pode ser nulo para mover o predador.");
+        }
+        if (partida == null) {
+            throw new IllegalArgumentException("A partida não pode ser nula para calcular a movimentação.");
+        }
+
         int dx = 0;
         int dy = 0;
 
@@ -47,7 +55,7 @@ public class Predador extends EntidadeJogo {
 
             // Dá o primeiro passo
             calcularDirecaoPerseguicao(partida, nivelAtual);
-            partida.processarInteracoes(); // SE O APANHOU AQUI, O SAPO MORRE JÁ e faz respawn
+            partida.processarInteracoes(); // Se o apanhou aqui o sapo morre e faz respawn
 
             // Se o sapo morreu ou a partida reiniciou o nível, o predador não deve continuar
             if (!partida.getSapo().isVivo() || (partida.getXSapo() == 1 && partida.getYSapo() == 1)) {
@@ -56,7 +64,7 @@ public class Predador extends EntidadeJogo {
 
             // Dá o segundo passo a partir da nova posição
             calcularDirecaoPerseguicao(partida, nivelAtual);
-            partida.processarInteracoes(); // Verifica se o apanhou no segundo quadrado
+            partida.processarInteracoes(); // Verifica se o apanhou no segundo passo
         }
     }
 
@@ -86,11 +94,11 @@ public class Predador extends EntidadeJogo {
         int novoX = predadorX + dx;
         int novoY = predadorY + dy;
 
-        // Se o caminho para perseguir for válido (não for água livre ou fora do mapa), ele avança
+        // Se o caminho para perseguir for válido (não for rio ou fora do mapa) ele avança
         if (isMovimentoValido(novoX, novoY, nivelAtual)) {
             setPosicao(novoX, novoY);
         } else {
-            // Se o caminho direto estiver bloqueado por água, tenta o outro eixo de forma aleatória
+            // Se o caminho direto estiver bloqueado por água tenta o outro eixo de forma aleatória
             Random rand = new Random();
             dx = 0; dy = 0;
             if (rand.nextBoolean()) dx = (sapoX > predadorX) ? 1 : -1;

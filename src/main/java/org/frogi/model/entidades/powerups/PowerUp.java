@@ -1,4 +1,4 @@
-package org.frogi.model.powerups;
+package org.frogi.model.entidades.powerups;
 
 import org.frogi.model.Partida;
 import org.frogi.model.entidades.EntidadeJogo;
