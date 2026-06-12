@@ -58,7 +58,7 @@ public class Predador extends EntidadeJogo {
             partida.processarInteracoes(); // Se o apanhou aqui o sapo morre e faz respawn
 
             // Se o sapo morreu ou a partida reiniciou o nível, o predador não deve continuar
-            if (!partida.getSapo().isVivo() || (partida.getXSapo() == 1 && partida.getYSapo() == 1)) {
+            if (!partida.getSapo().isVivo() || (partida.getXSapo() == 0 && partida.getYSapo() == 1)) {
                 return;
             }
 

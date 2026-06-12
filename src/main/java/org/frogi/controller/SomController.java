@@ -21,17 +21,16 @@ public class SomController {
             String musicaPath = Objects.requireNonNull(getClass().getResource("/audio/musica_fundo.mp3")).toExternalForm();
             Media media = new Media(musicaPath);
             musicaFundo = new MediaPlayer(media);
-            musicaFundo.setCycleCount(MediaPlayer.INDEFINITE); // Loop eterno
+            musicaFundo.setCycleCount(MediaPlayer.INDEFINITE);
             musicaFundo.setVolume(volumeMusica);
-
-            // Carrega Efeitos Sonoros
-            somComerGrilo = new AudioClip(Objects.requireNonNull(getClass().getResource("/audio/comer_grilo.wav")).toExternalForm());
-            somPowerUp    = new AudioClip(Objects.requireNonNull(getClass().getResource("/audio/powerup.wav")).toExternalForm());
-            somMorte      = new AudioClip(Objects.requireNonNull(getClass().getResource("/audio/morte.wav")).toExternalForm());
-
         } catch (Exception e) {
             System.err.println("Erro ao carregar ficheiros de áudio: " + e.getMessage());
         }
+
+        // Carrega Efeitos Sonoros
+        somComerGrilo = carregarAudio("/audio/comer_grilo.wav");
+        somPowerUp    = carregarAudio("/audio/powerup.wav");
+        somMorte      = carregarAudio("/audio/morte.wav");
     }
 
     public static SomController getInstance() {
@@ -41,8 +40,24 @@ public class SomController {
         return instance;
     }
 
+    private AudioClip carregarAudio(String caminho) {
+        try {
+            return new AudioClip(Objects.requireNonNull(getClass().getResource(caminho)).toExternalForm());
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return null;
+        }
+    }
+
     public void tocarMusicaFundo() {
         if (musicaFundo != null) musicaFundo.play();
+    }
+
+    public void pararMusica() {
+        if (musicaFundo != null) {
+            musicaFundo.stop();
+            musicaFundo.dispose();
+        }
     }
 
     public void tocarComerGrilo() {
@@ -59,7 +74,7 @@ public class SomController {
 
     // Configura o volume (recebe um valor entre 0.0 e 1.0)
     public void setVolumeMusica(double volume) {
-        this.volumeMusica = volume;
+        this.volumeMusica = Math.max(0.0, Math.min(1.0, volume));
         if (musicaFundo != null) {
             musicaFundo.setVolume(volume);
         }

@@ -15,6 +15,7 @@ import org.frogi.view.GameOverScreen;
 import org.frogi.view.JogoScreen;
 import org.frogi.view.VitoriaScreen;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class JogoController {
@@ -44,7 +45,6 @@ public class JogoController {
         this.partida = new Partida(jogador, criarNivel1());
         this.partida.iniciarPartida();
 
-        // Cria a View
         this.janelaJogo = new JogoScreen(partida);
 
         // Altera a Scene para mostrar o jogo
@@ -58,14 +58,13 @@ public class JogoController {
 
     public void tentarNovamente() {
         this.partida.reiniciarPartida();
-        this.partida.setNivel(criarNivel1()); // Garante que volta ao nível 1
+        this.partida.setNivel(criarNivel1());
 
         // Recria apenas a Scene
         this.janelaJogo = new JogoScreen(partida);
         cenaPrincipal.setRoot(janelaJogo.getContentorPrincipal());
 
         configurarControlos();
-        //gameLoop.playFromStart();
         gameLoop.play();
 
         primaryStage.setTitle("Frogi - " + partida.getNivelAtual().getNome());
@@ -101,7 +100,7 @@ public class JogoController {
 
     private void configurarGameLoop() {
         gameLoop = new Timeline(new KeyFrame(Duration.millis(1000), event -> {
-            // Quando fica sem vidas
+            // Verifica a derrota
             if (partida.getVidasRestantes() <= 0) {
                 gameLoop.stop();
                 cenaPrincipal.setOnKeyPressed(null);
@@ -135,7 +134,6 @@ public class JogoController {
             // Movimento dos rios e predadores
             if (!partida.isTerminada()) {
                 executarCicloFisica();
-
                 if (partida.isVenceu()) {
                     tratarVitoria();
                 }
@@ -153,7 +151,7 @@ public class JogoController {
         }
         cenaPrincipal.setOnKeyPressed(null);
 
-        // Termina a partida no modelo e recolhe as pontuações
+        // Termina a partida e recolhe as pontuações
         ResultadoPartida resultadoFinal = partida.terminarPartida();
 
         // Cria a View de Vitória
@@ -173,6 +171,7 @@ public class JogoController {
         int sapoX = partida.getXSapo();
         int sapoY = partida.getYSapo();
 
+        // Captura estado pré-movimento do rio para o Sapo
         boolean estavaNoNenufar = false;
         for (int[] par : mapa.getCoordenadasNenufares()) {
             if (par[0] == sapoX && par[1] == sapoY) {
@@ -181,42 +180,25 @@ public class JogoController {
             }
         }
 
+        //Move os nenufares
         mapa.moverNenufaresParaBaixo();
 
+
+        // Faz o Sapo mover-se com os nenufares
         if (mapa.getColunasRio().contains(sapoX)) {
             if (estavaNoNenufar) {
                 int novoYSapo = sapoY + 1;
                 if (partida.getNivelAtual().isPosicaoValida(sapoX, novoYSapo)) {
                     partida.getSapo().mover(0, 1);
                 } else {
-                    partida.perderVida();
+                    partida.perderVida(); // Caiu fora dos limites inferiores do rio
                 }
             } else {
-                partida.perderVida();
+                partida.perderVida(); // Estava no rio
             }
         }
 
         moverEntidadesDoMapa(partida.getNivelAtual(), partida);
-
-        // Ajuste dos predadores
-        for (EntidadeJogo entidade : mapa.getEntidades()) {
-            if (entidade instanceof Predador) {
-                int pX = entidade.getPosicaoX();
-                int pY = entidade.getPosicaoY();
-                if (mapa.getColunasRio().contains(pX)) {
-                    boolean predadorSeguro = false;
-                    for (int[] par : mapa.getCoordenadasNenufares()) {
-                        if (par[0] == pX && par[1] == pY) {
-                            predadorSeguro = true;
-                            break;
-                        }
-                    }
-                    if (!predadorSeguro) {
-                        entidade.setPosicao(pX - 1, pY);
-                    }
-                }
-            }
-        }
 
         partida.processarInteracoes();
         janelaJogo.atualizarMapa();
@@ -293,8 +275,9 @@ public class JogoController {
 
     private void moverEntidadesDoMapa(Nivel nivel, Partida partida) {
         Mapa mapa = nivel.getMapa();
+        List<EntidadeJogo> copiaEntidades = new ArrayList<>(mapa.getEntidades());
 
-        for (EntidadeJogo entidade : mapa.getEntidades()) {
+        for (EntidadeJogo entidade : copiaEntidades) {
             if (entidade instanceof Predador) {
                 int predadorX = entidade.getPosicaoX();
                 int predadorY = entidade.getPosicaoY();

@@ -22,6 +22,9 @@ public class Mapa {
         if (coordenadasNenufares == null) {
             throw new IllegalArgumentException("As coordenadas dos nenúfares não podem ser nulas.");
         }
+
+        validarNenufaresNoRio(colunasRio, coordenadasNenufares);
+
         this.entidades = new ArrayList<>();
         this.colunasRio = colunasRio;
         this.coordenadasNenufares = coordenadasNenufares;
@@ -99,4 +102,15 @@ public class Mapa {
         }
     }
 
+    private void validarNenufaresNoRio(List<Integer> colunasRio, int[][] coordenadasNenufares) {
+        for (int[] par : coordenadasNenufares) {
+            int xNenufar = par[0];
+            // Se a coluna X do nenúfar não estiver na lista de colunas que são rio
+            if (!colunasRio.contains(xNenufar)) {
+                throw new IllegalArgumentException(
+                        "Existe um nenúfar na coordenada X=" + xNenufar + ", mas essa coluna não faz parte do rio!"
+                );
+            }
+        }
+    }
 }

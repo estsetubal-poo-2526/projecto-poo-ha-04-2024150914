@@ -1,7 +1,6 @@
 package org.frogi.model;
 
-import org.frogi.model.entidades.*;
-
+import org.frogi.model.entidades.Grilo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,11 +24,20 @@ class GriloTest {
         Nivel nivel = new Nivel(1, new Mapa(rios, nenufares));
 
         partida = new Partida(jogador, nivel);
+        partida.iniciarPartida();
+
         grilo = new Grilo(5, 5);
     }
 
     @Test
-    void testInteragir() {
+    void testPosicao() {
+        // Verifica se os getters herdados de EntidadeJogo funcionam bem
+        assertEquals(5, grilo.getPosicaoX());
+        assertEquals(5, grilo.getPosicaoY());
+    }
+
+    @Test
+    void testInteragirIncrementaGrilosDoSapo() {
         assertEquals(0, partida.getGrilosApanhados());
 
         grilo.interagir(partida);
@@ -38,8 +46,13 @@ class GriloTest {
     }
 
     @Test
-    void testPosicao() {
-        assertEquals(5, grilo.getPosicaoX());
-        assertEquals(5, grilo.getPosicaoY());
+    void testCriarGriloComCoordenadasNegativasDeveLancarExcecao() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Grilo(-1, 5);
+        }, "Deveria ter lançado IllegalArgumentException para coordenada X negativa.");
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Grilo(5, -3);
+        }, "Deveria ter lançado IllegalArgumentException para coordenada Y negativa.");
     }
 }

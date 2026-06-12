@@ -35,6 +35,13 @@ public class Main extends Application {
         mostrarMenu();
     }
 
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        // Garante que o controlador de som desliga todas as threads de áudio ativas
+        SomController.getInstance().pararMusica();
+    }
+
     private void mostrarMenu() {
         // Cria o menu passando o que cada botão deve fazer quando for clicado
         MenuScreen menu = new MenuScreen(

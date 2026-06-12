@@ -1,6 +1,5 @@
 package org.frogi.model;
 
-import org.frogi.model.entidades.Sapo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,41 +14,65 @@ class NivelTest {
 
     @BeforeEach
     void setUp() {
-        List<Integer> rios = List.of(2, 4, 6, 8, 10, 12);
-        int[][] nenufares = {
-                {2, 2}, {2, 6}, {4, 3}, {4, 9}, {6, 0}, {6, 2},
-                {8, 5}, {8, 9}, {10, 0}, {10, 2}, {10, 7}, {12, 1}, {12, 3}
-        };
-        mapa =  new Mapa(rios, nenufares);
+        List<Integer> rios = List.of(2, 4);
+        int[][] nenufares = {{2, 2}, {4, 3}};
+        mapa = new Mapa(rios, nenufares);
         nivel = new Nivel(1, mapa);
     }
 
     @Test
-    void testGetNumero() {
+    void testGettersEConstrutorPadrao() {
         assertEquals(1, nivel.getNumero());
-    }
-
-    @Test
-    void testGetNome() {
-        assertEquals("Nível 1", nivel.getNome());
-    }
-
-    @Test
-    void testGetMapa() {
+        assertEquals("Nível 1", nivel.getNome(), "O construtor padrão deve gerar o nome automaticamente.");
         assertEquals(mapa, nivel.getMapa());
     }
 
     @Test
-    void testPosicaoValida() {
-        assertTrue(nivel.isPosicaoValida(10, 9));
-        assertFalse(nivel.isPosicaoValida(-1, 5));
-        assertFalse(nivel.isPosicaoValida(20, 20));
+    void testConstrutorCompletoComNomePersonalizado() {
+        Nivel nivelEspecial = new Nivel(2, mapa, "Pântano Assombrado");
+        assertEquals(2, nivelEspecial.getNumero());
+        assertEquals("Pântano Assombrado", nivelEspecial.getNome());
     }
 
     @Test
-    void testVerificarVitoria() {
-//        Sapo sapo = new Sapo(1, 1);
-//
-//        assertFalse(nivel.verificarVitoria(sapo));
+    void testDelegacaoDePosicaoValidaParaOMapa() {
+        assertTrue(nivel.isPosicaoValida(0, 0));
+        assertTrue(nivel.isPosicaoValida(14, 9));
+        assertFalse(nivel.isPosicaoValida(-1, 5));
+        assertFalse(nivel.isPosicaoValida(15, 10));
+    }
+
+    @Test
+    void testProcessarInteracoesValidaParametros() {
+        // Garante que o nível não aceita uma partida nula nas interações
+        assertThrows(IllegalArgumentException.class, () -> {
+            nivel.processarInteracoes(null);
+        }, "Deveria lançar IllegalArgumentException para partida nula.");
+    }
+
+    @Test
+    void testConstrutoresDevemLancarExcecoesParaDadosInvalidos() {
+        // Número de nível inválido
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Nivel(0, mapa);
+        }, "Nível zero deve ser proibido.");
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Nivel(-5, mapa);
+        }, "Nível negativo deve ser proibido.");
+
+        // Mapa nulo
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Nivel(1, null);
+        }, "O mapa não pode ser nulo.");
+
+        // Nomes inválidos no construtor completo
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Nivel(1, mapa, null);
+        }, "O nome não pode ser nulo.");
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Nivel(1, mapa, "   ");
+        }, "O nome não pode ser uma String vazia ou cheia de espaços.");
     }
 }

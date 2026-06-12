@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
@@ -41,6 +42,16 @@ public class LeaderboardScreen {
         tabela.setMaxSize(580, 380);
 
         // --- ESTILO CSS ---
+        // Quando a tabela está vazia
+        Label mensagemVazia = new Label("Nenhum principe foi salvo ainda...");
+        mensagemVazia.setStyle(
+                "-fx-text-fill: #5c4033; " +
+                        "-fx-font-family: 'Consolas', 'Courier New', monospace; " +
+                        "-fx-font-size: 16px; " +
+                        "-fx-font-weight: bold; " +
+                        "-fx-font-style: italic;"
+        );
+        tabela.setPlaceholder(mensagemVazia);
         // Configuração principal da tabela (fundo bege semi-transparente, cantos arredondados e fonte retro)
         tabela.setStyle(
                 "-fx-background-color: rgba(245, 222, 179, 0.5); " +
@@ -106,14 +117,24 @@ public class LeaderboardScreen {
         Button btnVoltar = new Button();
         btnVoltar.setPrefWidth(60);
         btnVoltar.setPrefHeight(40);
-        btnVoltar.setStyle(
-                "-fx-background-image: url('/images/botao_voltar_atras.png');" +
-                        "-fx-background-size: contain;" +
-                        "-fx-background-repeat: no-repeat;" +
-                        "-fx-background-position: center;" +
-                        "-fx-cursor: hand;" +
-                        "-fx-background-color: transparent;"
-        );
+
+        try {
+            String urlBotao = Objects.requireNonNull(getClass().getResource("/images/botao_voltar_atras.png")).toExternalForm();
+            btnVoltar.setStyle(
+                    "-fx-background-image: url('" + urlBotao + "');" +
+                            "-fx-background-size: contain;" +
+                            "-fx-background-repeat: no-repeat;" +
+                            "-fx-background-position: center;" +
+                            "-fx-cursor: hand;" +
+                            "-fx-background-color: transparent;"
+            );
+        } catch (Exception e) {
+            btnVoltar.setText("<-");
+            btnVoltar.setStyle("-fx-cursor: hand;");
+        }
+
+        btnVoltar.setOnMousePressed(e -> btnVoltar.setScaleX(0.90));
+        btnVoltar.setOnMouseReleased(e -> btnVoltar.setScaleX(1.0));
         btnVoltar.setOnAction(e -> onVoltarMenu.run());
 
         StackPane.setAlignment(btnVoltar, Pos.TOP_LEFT);

@@ -12,6 +12,9 @@ public class Partida {
     private static final int SPAWN_X = 0;
     private static final int SPAWN_Y = 1;
 
+    private static final int FIM_X = 14;
+    private static final int FIM_Y = 9;
+
     private boolean terminada;
     private boolean venceu;
 
@@ -138,7 +141,7 @@ public class Partida {
     }
 
     public boolean isNivelCompleto(){
-        return sapo.getPosicaoX() == 14 && sapo.getPosicaoY() == 9;
+        return sapo.getPosicaoX() == FIM_X && sapo.getPosicaoY() == FIM_Y;
     }
 
     public void reiniciarPartida() {
