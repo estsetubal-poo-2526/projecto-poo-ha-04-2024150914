@@ -26,7 +26,7 @@ public class GameOverScreen {
             root.setStyle("-fx-background-color: #000000;");
         }
 
-        // Cria um painel que fica exatamente por cima do fundo para o escurecer
+        // Cria um painel para escurecer o background
         Region peliculaEscura = new Region();
         // O valor '0.6' define a opacidade (60% de preto)
         peliculaEscura.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6);");
@@ -43,30 +43,12 @@ public class GameOverScreen {
 
         // Botão Tentar Outra Vez
         Button botaoReiniciar = new Button();
-        botaoReiniciar.setPrefWidth(181);
-        botaoReiniciar.setPrefHeight(82.42);
-        botaoReiniciar.setStyle(
-                "-fx-background-image: url('/images/botao_tentar_outra_vez.png');" +
-                        "-fx-background-size: contain;" +
-                        "-fx-background-repeat: no-repeat;" +
-                        "-fx-background-position: center;" +
-                        "-fx-cursor: hand;" +
-                        "-fx-background-color: transparent;"
-        );
+        EstiloBotao.estilizarBotaoComImagem(botaoReiniciar, "/images/botao_tentar_outra_vez.png", "Tentar outra vez", 181, 82.42);
         botaoReiniciar.setOnAction(event -> acaoTentarOutraVez.run());
 
         // Botão Voltar ao Menu
         Button botaoMenu = new Button();
-        botaoMenu.setPrefWidth(181);
-        botaoMenu.setPrefHeight(82.42);
-        botaoMenu.setStyle(
-                "-fx-background-image: url('/images/botao_menu.png');" +
-                        "-fx-background-size: contain;" +
-                        "-fx-background-repeat: no-repeat;" +
-                        "-fx-background-position: center;" +
-                        "-fx-cursor: hand;" +
-                        "-fx-background-color: transparent;"
-        );
+        EstiloBotao.estilizarBotaoComImagem(botaoMenu, "/images/botao_menu.png", "Menu", 181, 82.42);
         botaoMenu.setOnAction(event -> acaoBotaoMenu.run());
 
         // Adiciona os elementos de texto e botões ao VBox intermédio

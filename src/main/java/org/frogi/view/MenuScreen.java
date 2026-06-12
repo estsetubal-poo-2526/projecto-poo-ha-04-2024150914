@@ -42,16 +42,8 @@ public class MenuScreen {
         topoPane.setPickOnBounds(false); // Permite clicar através do painel vazio
 
         Button btnAjuda = new Button();
-        btnAjuda.setPrefWidth(60);
-        btnAjuda.setPrefHeight(40);
-        btnAjuda.setStyle(
-                "-fx-background-image: url('/images/botao_ajuda.png');" +
-                        "-fx-background-size: contain;" +
-                        "-fx-background-repeat: no-repeat;" +
-                        "-fx-background-position: center;" +
-                        "-fx-cursor: hand;" +
-                        "-fx-background-color: transparent;"
-        );
+        EstiloBotao.estilizarBotaoComImagem(btnAjuda, "/images/botao_ajuda.png", "?", 60, 40);
+
         btnAjuda.setOnAction(e -> onHowToPlay.run());
 
 

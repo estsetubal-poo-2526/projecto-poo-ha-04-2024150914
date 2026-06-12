@@ -115,26 +115,7 @@ public class LeaderboardScreen {
 
         // Botão de voltar no canto superior esquerdo
         Button btnVoltar = new Button();
-        btnVoltar.setPrefWidth(60);
-        btnVoltar.setPrefHeight(40);
-
-        try {
-            String urlBotao = Objects.requireNonNull(getClass().getResource("/images/botao_voltar_atras.png")).toExternalForm();
-            btnVoltar.setStyle(
-                    "-fx-background-image: url('" + urlBotao + "');" +
-                            "-fx-background-size: contain;" +
-                            "-fx-background-repeat: no-repeat;" +
-                            "-fx-background-position: center;" +
-                            "-fx-cursor: hand;" +
-                            "-fx-background-color: transparent;"
-            );
-        } catch (Exception e) {
-            btnVoltar.setText("<-");
-            btnVoltar.setStyle("-fx-cursor: hand;");
-        }
-
-        btnVoltar.setOnMousePressed(e -> btnVoltar.setScaleX(0.90));
-        btnVoltar.setOnMouseReleased(e -> btnVoltar.setScaleX(1.0));
+        EstiloBotao.estilizarBotaoComImagem(btnVoltar, "/images/botao_voltar_atras.png", "Voltar", 60, 40);
         btnVoltar.setOnAction(e -> onVoltarMenu.run());
 
         StackPane.setAlignment(btnVoltar, Pos.TOP_LEFT);
