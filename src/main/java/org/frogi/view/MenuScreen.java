@@ -37,13 +37,12 @@ public class MenuScreen {
             root.setStyle("-fx-background-color: #2e7d32;"); // Fundo verde alternativo caso falhe
         }
 
-        // Painel Superior (Botão de atalho ? no canto esquerdo)
+        // Painel Superior (Botão ? no canto superior esquerdo)
         BorderPane topoPane = new BorderPane();
         topoPane.setPickOnBounds(false); // Permite clicar através do painel vazio
 
         Button btnAjuda = new Button();
         EstiloBotao.estilizarBotaoComImagem(btnAjuda, "/images/botao_ajuda.png", "?", 60, 40);
-
         btnAjuda.setOnAction(e -> onHowToPlay.run());
 
 
@@ -58,42 +57,15 @@ public class MenuScreen {
 
         // Botões de Ação
         Button btnNovoJogo = new Button();
-        btnNovoJogo.setPrefWidth(181);
-        btnNovoJogo.setPrefHeight(82.42);
-        btnNovoJogo.setStyle(
-                "-fx-background-image: url('/images/botao_novo_jogo.png');" +
-                        "-fx-background-size: contain;" +
-                        "-fx-background-repeat: no-repeat;" +
-                        "-fx-background-position: center;" +
-                        "-fx-cursor: hand;" +
-                        "-fx-background-color: transparent;"
-        );
+        EstiloBotao.estilizarBotaoComImagem(btnNovoJogo, "/images/botao_novo_jogo.png", "Novo Jogo", 181, 82.42);
         btnNovoJogo.setOnAction(e -> onNewGame.run());
 
         Button btnOpcoes = new Button();
-        btnOpcoes.setPrefWidth(181);
-        btnOpcoes.setPrefHeight(82.42);
-        btnOpcoes.setStyle(
-                "-fx-background-image: url('/images/botao_opcoes.png');" +
-                        "-fx-background-size: contain;" +
-                        "-fx-background-repeat: no-repeat;" +
-                        "-fx-background-position: center;" +
-                        "-fx-cursor: hand;" +
-                        "-fx-background-color: transparent;"
-        );
+        EstiloBotao.estilizarBotaoComImagem(btnOpcoes, "/images/botao_opcoes.png", "Opções", 181, 82.42);
         btnOpcoes.setOnAction(e -> onOptions.run());
 
         Button btnPontuacoes = new Button();
-        btnPontuacoes.setPrefWidth(181);
-        btnPontuacoes.setPrefHeight(82.42);
-        btnPontuacoes.setStyle(
-                "-fx-background-image: url('/images/botao_pontuacoes.png');" +
-                        "-fx-background-size: contain;" +
-                        "-fx-background-repeat: no-repeat;" +
-                        "-fx-background-position: center;" +
-                        "-fx-cursor: hand;" +
-                        "-fx-background-color: transparent;"
-        );
+        EstiloBotao.estilizarBotaoComImagem(btnPontuacoes, "/images/botao_pontuacoes.png", "Pontuações", 181, 82.42);
         btnPontuacoes.setOnAction(e -> onLeaderboard.run());
 
         menuCentral.getChildren().addAll(btnNovoJogo, btnOpcoes, btnPontuacoes);

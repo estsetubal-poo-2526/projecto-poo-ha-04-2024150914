@@ -24,7 +24,7 @@ public class VitoriaScreen {
             Image imgFase1 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/vitoriapt1.png")));
             Image imgFase2 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/vitoriapt2.png")));
 
-            // Cria as Views e configurá-las para serem responsivas
+            // Cria as Views e configura-as para serem responsivas
             ImageView viewFase1 = new ImageView(imgFase1);
             ImageView viewFase2 = new ImageView(imgFase2);
 
@@ -34,13 +34,11 @@ public class VitoriaScreen {
             // Adiciona ao StackPane
             // A Fase 2 (Príncipe) fica por trás, e a Fase 1 (Sapo) fica à frente tapando-a
             root.getChildren().addAll(viewFase2, viewFase1);
-
-            // Inicia a sequência automática de animação
             iniciarSequenciaAnimacao(viewFase1);
 
         } catch (Exception e) {
             System.out.println("[Erro] Não foi possível carregar as imagens de vitória: " + e.getMessage());
-            // Se falhar, espera 3 segundos e avança para não encravar o jogo
+            // Se falhar espera 3 segundos e avança para não encravar o jogo
             PauseTransition falhaPause = new PauseTransition(Duration.seconds(3));
             falhaPause.setOnFinished(event -> onFinalizarVitoria.run());
             falhaPause.play();

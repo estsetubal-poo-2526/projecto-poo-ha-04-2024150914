@@ -42,16 +42,7 @@ public class OpcoesScreen {
         camadaTop.setPickOnBounds(false);
 
         Button btnVoltar = new Button();
-        btnVoltar.setPrefWidth(60);
-        btnVoltar.setPrefHeight(40);
-        btnVoltar.setStyle(
-                "-fx-background-image: url('/images/botao_voltar_atras.png');" +
-                        "-fx-background-size: contain;" +
-                        "-fx-background-repeat: no-repeat;" +
-                        "-fx-background-position: center;" +
-                        "-fx-cursor: hand;" +
-                        "-fx-background-color: transparent;" // Remove o cinzento nativo
-        );
+        EstiloBotao.estilizarBotaoComImagem(btnVoltar, "/images/botao_voltar_atras.png", "Voltar", 60, 40);
         btnVoltar.setOnAction(e -> onVoltarMenu.run());
 
         AnchorPane.setTopAnchor(btnVoltar, 32.0);
@@ -96,31 +87,13 @@ public class OpcoesScreen {
         linhaEcra.setAlignment(Pos.CENTER);
 
         Button btnJanela = new Button();
-        btnJanela.setPrefWidth(181);
-        btnJanela.setPrefHeight(82.42);
-        btnJanela.setStyle(
-                "-fx-background-image: url('/images/botao_janela.png');" +
-                        "-fx-background-size: contain;" +
-                        "-fx-background-repeat: no-repeat;" +
-                        "-fx-background-position: center;" +
-                        "-fx-cursor: hand;" +
-                        "-fx-background-color: transparent;"
-        );
+        EstiloBotao.estilizarBotaoComImagem(btnJanela, "/images/botao_janela.png", "Janela", 181, 82.42);
         btnJanela.setOnAction(e -> {
             primaryStage.setFullScreen(false);
         });
 
         Button btnFullScreen = new Button();
-        btnFullScreen.setPrefWidth(181);
-        btnFullScreen.setPrefHeight(82.42);
-        btnFullScreen.setStyle(
-                "-fx-background-image: url('/images/botao_fullscreen.png');" +
-                        "-fx-background-size: contain;" +
-                        "-fx-background-repeat: no-repeat;" +
-                        "-fx-background-position: center;" +
-                        "-fx-cursor: hand;" +
-                        "-fx-background-color: transparent;"
-        );
+        EstiloBotao.estilizarBotaoComImagem(btnFullScreen, "/images/botao_fullscreen.png", "FullScreen", 181, 82.42);
         btnFullScreen.setOnAction(e -> {
             primaryStage.setFullScreen(true);
         });

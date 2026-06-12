@@ -51,7 +51,6 @@ public class GameOverScreen {
         EstiloBotao.estilizarBotaoComImagem(botaoMenu, "/images/botao_menu.png", "Menu", 181, 82.42);
         botaoMenu.setOnAction(event -> acaoBotaoMenu.run());
 
-        // Adiciona os elementos de texto e botões ao VBox intermédio
         conteudo.getChildren().addAll(textoGameOver, botaoReiniciar, botaoMenu);
 
         this.root.getChildren().addAll(peliculaEscura, conteudo);
