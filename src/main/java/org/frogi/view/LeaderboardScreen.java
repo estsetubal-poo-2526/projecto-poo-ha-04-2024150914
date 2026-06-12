@@ -29,7 +29,7 @@ public class LeaderboardScreen {
     private void configurarLayout() {
         // Imagem de Fundo
         try {
-            Image img = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/background.png")));
+            Image img = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/leaderboard.png")));
             root.setBackground(new Background(new BackgroundImage(img,
                     BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                     BackgroundPosition.CENTER, new BackgroundSize(100, 100, true, true, true, true))));
