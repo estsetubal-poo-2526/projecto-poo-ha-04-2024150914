@@ -2,12 +2,15 @@ package org.frogi;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.frogi.controller.SomController;
 import org.frogi.controller.JogoController;
 import org.frogi.model.Jogador;
 import org.frogi.model.Leaderboard;
 import org.frogi.view.*;
+
+import java.util.Objects;
 
 public class Main extends Application {
 
@@ -29,6 +32,13 @@ public class Main extends Application {
 
         primaryStage.setTitle("Frogi");
         primaryStage.setScene(cenaPrincipal);
+        try {
+            // Carrega o sprite do sapo que já usas no jogo para ser o ícone da janela
+            Image iconSapo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/sapo.png")));
+            primaryStage.getIcons().add(iconSapo);
+        } catch (Exception e) {
+            System.out.println("[AVISO] Não foi possível carregar o ícone da janela.");
+        }
         primaryStage.show();
 
         // Arranca mostrando o Menu Principal

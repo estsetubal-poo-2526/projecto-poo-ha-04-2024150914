@@ -40,7 +40,7 @@ public class NomeScreen {
 
         Label lblPedirNome = new Label("INTRODUZ O TEU NOME:");
         lblPedirNome.setStyle(
-                "-fx-text-fill: #f5ccb0; " + // Cor bege condizente com a borda
+                "-fx-text-fill: #f5ccb0; " + // Bege
                         "-fx-font-family: 'Consolas', monospace; " +
                         "-fx-font-size: 18px; " +
                         "-fx-font-weight: bold;"
@@ -60,7 +60,7 @@ public class NomeScreen {
                         "-fx-border-radius: 5px;"
         );
 
-        // Submeter automaticamente se o jogador carregar na tecla Enter
+        // Submete automaticamente se o jogador carregar na tecla Enter
         txtNome.setOnAction(e -> {
             String nome = txtNome.getText().trim();
             if (!nome.isEmpty()) onConfirmarNome.accept(nome);
@@ -72,30 +72,12 @@ public class NomeScreen {
 
         // Botão Cancelar com Imagem
         Button btnCancelar = new Button();
-        btnCancelar.setPrefWidth(140);
-        btnCancelar.setPrefHeight(50);
-        btnCancelar.setStyle(
-                "-fx-background-image: url('/images/botao_cancelar.png');" +
-                        "-fx-background-size: contain;" +
-                        "-fx-background-repeat: no-repeat;" +
-                        "-fx-background-position: center;" +
-                        "-fx-cursor: hand;" +
-                        "-fx-background-color: transparent;"
-        );
+        EstiloBotao.estilizarBotaoComImagem(btnCancelar, "/images/botao_cancelar.png", "Cancelar", 140, 50);
         btnCancelar.setOnAction(e -> onCancelar.run());
 
         // Botão Jogar com Imagem
         Button btnJogar = new Button();
-        btnJogar.setPrefWidth(140);
-        btnJogar.setPrefHeight(50);
-        btnJogar.setStyle(
-                "-fx-background-image: url('/images/botao_jogar.png');" +
-                        "-fx-background-size: contain;" +
-                        "-fx-background-repeat: no-repeat;" +
-                        "-fx-background-position: center;" +
-                        "-fx-cursor: hand;" +
-                        "-fx-background-color: transparent;"
-        );
+        EstiloBotao.estilizarBotaoComImagem(btnJogar, "/images/botao_jogar.png", "Cancelar", 140, 50);
         btnJogar.setOnAction(e -> {
             String nome = txtNome.getText().trim();
             if (!nome.isEmpty()) {

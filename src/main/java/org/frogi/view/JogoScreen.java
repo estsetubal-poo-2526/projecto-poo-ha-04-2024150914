@@ -28,9 +28,8 @@ public class JogoScreen {
     private final Partida partida;
 
     private boolean pausado = false;
-    private VBox painelPausa; // O menu que vai aparecer flutuante
+    private VBox painelPausa;
 
-    // Contentor principal e componentes da Interface Flutuante
     private final StackPane contentorPrincipal;
     private HBox barraHUD;
     private HBox contentorCoracoes;
@@ -58,14 +57,10 @@ public class JogoScreen {
         this.gridPane = new GridPane();
         this.contentorPrincipal = new StackPane();
 
-        // Configuração de fundo do StackPane para envolver e centrar o tabuleiro
         this.contentorPrincipal.setStyle("-fx-background-color: #112211;");
         gridPane.setAlignment(Pos.CENTER);
 
-        // Criar o HUD
         this.barraHUD = criarHUDFlutuante();
-
-        // Camada 1: O tabuleiro de jogo / Camada 2: O HUD por cima
         this.contentorPrincipal.getChildren().addAll(gridPane, barraHUD);
 
         atualizarMapa();
@@ -77,11 +72,11 @@ public class JogoScreen {
         hud.setAlignment(Pos.TOP_CENTER);
         hud.setPickOnBounds(false); // Permite que os cliques passem através do HUD para o jogo
 
-        // Região esquerda: Espaço reservado para o sinal de Start
+        // Região esquerda - Espaço reservado para o sinal de Start
         Region espacoEsquerda = new Region();
         HBox.setHgrow(espacoEsquerda, Priority.ALWAYS);
 
-        // Região central: Vidas, Tempo e Grilos alinhados
+        // Região central - Vidas, Tempo e Grilos alinhados
         HBox centroInfo = new HBox(35);
         centroInfo.setAlignment(Pos.TOP_CENTER);
 
@@ -97,7 +92,7 @@ public class JogoScreen {
 
         centroInfo.getChildren().addAll(contentorCoracoes, lblTimer, lblGrilos);
 
-        // Região direita: dica do ESC alinhada à direita
+        // Região direita - dica do ESC alinhada à direita
         HBox direitaInfo = new HBox();
         direitaInfo.setAlignment(Pos.TOP_RIGHT);
         HBox.setHgrow(direitaInfo, Priority.ALWAYS);
@@ -128,13 +123,13 @@ public class JogoScreen {
             String caminho = "/images/" + nomeFicheiro;
             return new Image(Objects.requireNonNull(getClass().getResourceAsStream(caminho)));
         } catch (Exception e) {
-            System.out.println("[AVISO] Não foi possível carregar a imagem: " + nomeFicheiro);
+            System.out.println("Não foi possível carregar a imagem: " + nomeFicheiro);
             return null;
         }
     }
 
     public void atualizarMapa() {
-        //Atualizar HUD Dinâmico
+        //Atualizar HUD
         long segundosDeJogo = partida.getTempoDecorrido();
         long minutos = segundosDeJogo / 60;
         long segundos = segundosDeJogo % 60;
@@ -142,7 +137,7 @@ public class JogoScreen {
         lblTimer.setText(String.format("Tempo: %02d:%02d", minutos, segundos));
         lblGrilos.setText("Grilos: " + partida.getGrilosApanhados());
 
-        // Desenhar corações dinamicamente com base nas vidas restantes
+        // Desenhar corações com base nas vidas restantes
         contentorCoracoes.getChildren().clear();
         int vidas = partida.getVidasRestantes();
         for (int i = 0; i < vidas; i++) {
@@ -152,7 +147,7 @@ public class JogoScreen {
             contentorCoracoes.getChildren().add(coracao);
         }
 
-        // Atualizar Grelha do Tabuleiro
+        // Atualizar Tabuleiro
         gridPane.getChildren().clear();
 
         Mapa mapaAtual = partida.getNivelAtual().getMapa();
@@ -189,6 +184,8 @@ public class JogoScreen {
         for (EntidadeJogo entidade : partida.getNivelAtual().getMapa().getEntidades()) {
             ImageView visualEntidade = criarVisualEntidade(entidade);
             if (visualEntidade != null) {
+                GridPane.setHalignment(visualEntidade, javafx.geometry.HPos.CENTER);
+                GridPane.setValignment(visualEntidade, javafx.geometry.VPos.CENTER);
                 gridPane.add(visualEntidade, entidade.getPosicaoX(), entidade.getPosicaoY());
             }
         }
@@ -220,15 +217,15 @@ public class JogoScreen {
                 case GRANDE  -> tamanhoSapo = 72;
             }
 
-            // Aplica o tamanho calculado
+            // Aplica o tamanho
             visualSapo.setFitWidth(tamanhoSapo);
             visualSapo.setFitHeight(tamanhoSapo);
 
-            // Centra o sapo na célula
+            // Centra o sapo
             GridPane.setHalignment(visualSapo, javafx.geometry.HPos.CENTER);
             GridPane.setValignment(visualSapo, javafx.geometry.VPos.CENTER);
 
-            // Adiciona-o à grelha na posição correta
+            // Adiciona-o na posição correta
             gridPane.add(visualSapo, partida.getXSapo(), partida.getYSapo());
         }
     }
@@ -238,7 +235,7 @@ public class JogoScreen {
 
         if (entidade instanceof Grilo) {
             view.setImage(imgGrilo);
-            // Define um tamanho mais pequeno para o grilo
+            // Tamanho mais pequeno para o grilo
             view.setFitWidth(36);
             view.setFitHeight(36);
             GridPane.setHalignment(view, javafx.geometry.HPos.CENTER);
@@ -264,13 +261,12 @@ public class JogoScreen {
 
     public void alternarPausa(Timeline gameLoop, Runnable acaoIrParaMenu) {
         if (!pausado) {
-            // PAUSAR O JOGO
             pausado = true;
             gameLoop.pause();
 
             partida.registarInicioPausa();
 
-            // Cria o painel visual de pausa de forma dinâmica
+            // Cria o painel de pausa
             painelPausa = new VBox(20);
             painelPausa.setAlignment(Pos.CENTER);
             painelPausa.setStyle("-fx-background-color: rgba(0, 0, 0, 0.75);");
@@ -281,49 +277,24 @@ public class JogoScreen {
 
             // Botão para Voltar ao Jogo
             Button btnContinuar = new Button();
-            btnContinuar.setPrefWidth(181);
-            btnContinuar.setPrefHeight(82.42);
-            btnContinuar.setStyle(
-                    "-fx-background-image: url('/images/botao_continuar.png');" +
-                            "-fx-background-size: contain;" +
-                            "-fx-background-repeat: no-repeat;" +
-                            "-fx-background-position: center;" +
-                            "-fx-cursor: hand;" +
-                            "-fx-background-color: transparent;" // Remove o cinzento nativo
-            );
+            EstiloBotao.estilizarBotaoComImagem(btnContinuar, "/images/botao_continuar.png", "Continuar", 181, 82.42);
             btnContinuar.setOnAction(e -> alternarPausa(gameLoop, acaoIrParaMenu)); // Despausa
 
             // Botão para Sair para o Menu Principal
             Button btnSair = new Button();
-            btnSair.setPrefWidth(181);
-            btnSair.setPrefHeight(82.42);
-            btnSair.setStyle(
-                    "-fx-background-image: url('/images/botao_menu.png');" +
-                            "-fx-background-size: contain;" +
-                            "-fx-background-repeat: no-repeat;" +
-                            "-fx-background-position: center;" +
-                            "-fx-cursor: hand;" +
-                            "-fx-background-color: transparent;" // Remove o cinzento nativo
-            );
+            EstiloBotao.estilizarBotaoComImagem(btnSair, "/images/botao_menu.png", "Sair para o Menu", 181, 82.42);
             btnSair.setOnAction(e -> {
-                gameLoop.stop(); // Garante que a timeline morre de vez
-                acaoIrParaMenu.run(); // Executa o método mostrarMenu() do Main
+                gameLoop.stop();
+                acaoIrParaMenu.run();
             });
 
             painelPausa.getChildren().addAll(imgTituloPausa, btnContinuar, btnSair);
-
-            // Adiciona o menu de pausa na camada da frente do StackPane
             contentorPrincipal.getChildren().add(painelPausa);
         } else {
-            // RETOMAR O JOGO
             pausado = false;
-
             // Remove o menu de pausa da tela
             contentorPrincipal.getChildren().remove(painelPausa);
-
-            //Desconta o tempo que esteve em pausa
             partida.ajustarTempoPosPausa();
-
             gameLoop.play(); // Descongela a Timeline
         }
     }
